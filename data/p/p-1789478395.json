@@ -1,0 +1,505 @@
+{
+  "id": "p-1789478395",
+  "track": "P",
+  "trackName": "Probability",
+  "created": "2026-09-15T13:19:55.361076+00:00",
+  "config": {
+    "numQuestions": 30,
+    "choices": 5,
+    "timeLimitMinutes": 180
+  },
+  "source": "bedrock",
+  "llmQuestions": 30,
+  "syllabusWeights": {
+    "General Probability": "23-30%",
+    "Univariate Random Variables": "44-50%",
+    "Multivariate Random Variables": "23-30%"
+  },
+  "topicDistribution": {
+    "Univariate Random Variables": 14,
+    "General Probability": 8,
+    "Multivariate Random Variables": 8
+  },
+  "questions": [
+    {
+      "n": 1,
+      "topic": "Univariate Random Variables",
+      "stem": "A retirement fund manager reviews investment proposals sequentially. Each proposal has a probability of 0.15 of meeting the fund's risk-adjusted return threshold, independent of other proposals. The manager will stop reviewing once a proposal meets the threshold. What is the probability that the manager must review exactly 5 proposals before finding one that meets the threshold?",
+      "choices": {
+        "A": "0.1500",
+        "B": "0.0921",
+        "C": "0.0666",
+        "D": "0.0783",
+        "E": "0.0522"
+      },
+      "answer": "D",
+      "answerValue": "0.0783",
+      "solution": "Let X = number of proposals reviewed until the first success. X follows a geometric distribution with parameter p = 0.15. We want P(X = 5), which means the first 4 proposals fail and the 5th succeeds.\n\nThe geometric PMF is: P(X = k) = (1 - p)^(k-1) * p\n\nSubstituting our values:\nP(X = 5) = (1 - 0.15)^(5-1) * 0.15\n         = (0.85)^4 * 0.15\n         = 0.52200625 * 0.15\n         = 0.0783009375\n         \u2248 0.0783",
+      "displayTopic": "Geometric distribution"
+    },
+    {
+      "n": 2,
+      "topic": "General Probability",
+      "stem": "A mortgage borrower is evaluated for two types of risk. There is a 0.18 probability that the borrower will miss at least one payment in the first year. There is a 0.22 probability that the borrower's property value will decline below the loan amount in the first year. There is a 0.07 probability that both events will occur. Calculate the probability that at least one of these two events occurs in the first year.",
+      "choices": {
+        "A": "0.33",
+        "B": "0.11",
+        "C": "0.40",
+        "D": "0.26",
+        "E": "0.29"
+      },
+      "answer": "A",
+      "answerValue": "0.33",
+      "solution": "Let A be the event that the borrower misses at least one payment, and B be the event that property value declines below the loan amount. We are given P(A) = 0.18, P(B) = 0.22, and P(A \u2229 B) = 0.07. We need to find P(A \u222a B). Using the formula for the probability of a union: P(A \u222a B) = P(A) + P(B) - P(A \u2229 B) = 0.18 + 0.22 - 0.07 = 0.33",
+      "displayTopic": "Probability of union"
+    },
+    {
+      "n": 3,
+      "topic": "Univariate Random Variables",
+      "stem": "A pension plan administrator models the age at which participants retire as uniformly distributed between 62 and 70 years old. Calculate the expected retirement age for a randomly selected participant.",
+      "choices": {
+        "A": "66.0",
+        "B": "67.0",
+        "C": "66.5",
+        "D": "65.0",
+        "E": "64.0"
+      },
+      "answer": "A",
+      "answerValue": "66.0",
+      "solution": "For a continuous uniform distribution on the interval [a, b], the expected value (mean) is E[X] = (a + b) / 2.\n\nGiven: a = 62 years, b = 70 years\n\nE[X] = (62 + 70) / 2 = 132 / 2 = 66.0 years\n\nThe expected retirement age is 66.0 years.",
+      "displayTopic": "Continuous Uniform Distribution"
+    },
+    {
+      "n": 4,
+      "topic": "General Probability",
+      "stem": "A pension plan classifies retirees as either eligible for enhanced benefits or standard benefits. Among all retirees, 18% are eligible for enhanced benefits and also receive a lump-sum distribution within their first year of retirement. Additionally, 40% of all retirees receive a lump-sum distribution within their first year of retirement. What is the probability that a randomly selected retiree is eligible for enhanced benefits, given that the retiree receives a lump-sum distribution within their first year of retirement?",
+      "choices": {
+        "A": "0.58",
+        "B": "0.45",
+        "C": "0.35",
+        "D": "0.22",
+        "E": "0.07"
+      },
+      "answer": "B",
+      "answerValue": "0.45",
+      "solution": "Let A = event that retiree is eligible for enhanced benefits, and B = event that retiree receives lump-sum distribution within first year. We are given P(A and B) = 0.18 and P(B) = 0.40. We need to find P(A|B). Using the conditional probability formula: P(A|B) = P(A and B) / P(B) = 0.18 / 0.40 = 0.45.",
+      "displayTopic": "Conditional Probability"
+    },
+    {
+      "n": 5,
+      "topic": "General Probability",
+      "stem": "A pharmaceutical company is conducting a clinical trial at two research sites. Site A enrolls 60% of all trial participants, while Site B enrolls the remaining 40%. At Site A, 15% of participants experience adverse side effects. At Site B, 25% of participants experience adverse side effects. A participant is randomly selected from all those enrolled in the trial and is found to have experienced adverse side effects. What is the probability that this participant was enrolled at Site A?",
+      "choices": {
+        "A": "0.5263",
+        "B": "0.3750",
+        "C": "0.1500",
+        "D": "0.6000",
+        "E": "0.4737"
+      },
+      "answer": "E",
+      "answerValue": "0.4737",
+      "solution": "Let A = participant enrolled at Site A, B = participant enrolled at Site B, and D = participant experienced adverse side effects. We are given: P(A) = 0.60, P(B) = 0.40, P(D|A) = 0.15, P(D|B) = 0.25. We need to find P(A|D). By Bayes' Theorem: P(A|D) = P(D|A) * P(A) / P(D). First find P(D) using the law of total probability: P(D) = P(D|A) * P(A) + P(D|B) * P(B) = 0.15 * 0.60 + 0.25 * 0.40 = 0.09 + 0.10 = 0.19. Therefore: P(A|D) = (0.15 * 0.60) / 0.19 = 0.09 / 0.19 = 0.473684... \u2248 0.4737",
+      "displayTopic": "Bayes' Theorem"
+    },
+    {
+      "n": 6,
+      "topic": "General Probability",
+      "stem": "A tech startup can secure funding from either Venture Capital firm A or Venture Capital firm B. The probability that firm A provides funding is 0.35, and the probability that firm B provides funding is 0.65. If firm A provides funding, the probability that the startup's runway extends beyond 24 months is 0.80. If firm B provides funding, the probability that the startup's runway extends beyond 24 months is 0.55. Given that the startup's runway extends beyond 24 months, what is the probability that the funding came from firm A?",
+      "choices": {
+        "A": "0.5200",
+        "B": "0.2800",
+        "C": "0.4392",
+        "D": "0.3575",
+        "E": "0.6425"
+      },
+      "answer": "C",
+      "answerValue": "0.4392",
+      "solution": "Let A = funding from firm A, B = funding from firm B, R = runway extends beyond 24 months. We are given: P(A) = 0.35, P(B) = 0.65, P(R|A) = 0.80, P(R|B) = 0.55. We need P(A|R). By the law of total probability: P(R) = P(R|A)P(A) + P(R|B)P(B) = 0.80(0.35) + 0.55(0.65) = 0.28 + 0.3575 = 0.6375. By Bayes' theorem: P(A|R) = P(R|A)P(A) / P(R) = 0.80(0.35) / 0.6375 = 0.28 / 0.6375 = 0.4386.",
+      "displayTopic": "Bayes' Theorem"
+    },
+    {
+      "n": 7,
+      "topic": "Univariate Random Variables",
+      "stem": "A scholarship trust fund awards scholarships on a first-come, first-served basis as applications are received. The time in months between consecutive scholarship awards follows an exponential distribution with mean 3.5 months. What is the probability that the time between two consecutive awards is at most 4 months?",
+      "choices": {
+        "A": "0.3247",
+        "B": "0.5507",
+        "C": "0.7135",
+        "D": "0.6811",
+        "E": "0.8347"
+      },
+      "answer": "D",
+      "answerValue": "0.6811",
+      "solution": "Let T be the time in months between consecutive scholarship awards. T follows an exponential distribution with mean theta = 3.5 months. The rate parameter is lambda = 1/theta = 1/3.5 = 2/7 per month.\n\nWe need to find P(T <= 4).\n\nFor an exponential distribution with mean theta, the CDF is:\nF(t) = P(T <= t) = 1 - e^(-t/theta)\n\nSubstituting t = 4 and theta = 3.5:\nF(4) = 1 - e^(-4/3.5)\n     = 1 - e^(-8/7)\n     = 1 - e^(-1.142857...)\n     = 1 - 0.3188...\n     = 0.6753\n\nTherefore, the probability that the time between two consecutive awards is at most 4 months is 0.6753.",
+      "displayTopic": "Exponential Distribution"
+    },
+    {
+      "n": 8,
+      "topic": "Univariate Random Variables",
+      "stem": "A university endowment fund invests in a portfolio of venture capital projects. The time until a randomly selected project exits (either through acquisition or failure) follows an exponential distribution with mean 4.5 years. What is the probability that a project selected today will still be active (not yet exited) 3 years from now?",
+      "choices": {
+        "A": "0.3333",
+        "B": "0.6667",
+        "C": "0.5134",
+        "D": "0.4866",
+        "E": "0.5488"
+      },
+      "answer": "C",
+      "answerValue": "0.5134",
+      "solution": "For an exponential distribution with mean theta, the survival function is P(T > t) = exp(-t/theta). Here, theta = 4.5 years and t = 3 years. Therefore, P(T > 3) = exp(-3/4.5) = exp(-2/3) = exp(-0.6667) = 0.5134.",
+      "displayTopic": "Exponential Distribution"
+    },
+    {
+      "n": 9,
+      "topic": "Univariate Random Variables",
+      "stem": "A car dealership offers financing with an annual interest rate that varies uniformly between 3.5% and 7.5% depending on the customer's credit score. What is the variance of the interest rate (in percent squared)?",
+      "choices": {
+        "A": "2.0000%",
+        "B": "0.6667%",
+        "C": "1.3333%",
+        "D": "1.0000%",
+        "E": "4.0000%"
+      },
+      "answer": "C",
+      "answerValue": "1.3333%",
+      "solution": "For a continuous uniform distribution on [a, b], the variance is (b - a)^2 / 12.\n\nGiven: a = 3.5%, b = 7.5%\n\nVariance = (7.5 - 3.5)^2 / 12\n         = (4)^2 / 12\n         = 16 / 12\n         = 4/3\n         = 1.3333 percent squared\n\nNote: The variance is expressed in squared units of the original variable (percent squared).",
+      "displayTopic": "Continuous Uniform Distribution"
+    },
+    {
+      "n": 10,
+      "topic": "Univariate Random Variables",
+      "stem": "A municipal bond investor models the time until default (in years) of a particular bond as an exponential random variable with mean 12 years. What is the probability that the bond survives beyond 8 years without defaulting?",
+      "choices": {
+        "A": "0.5134",
+        "B": "0.3333",
+        "C": "0.4866",
+        "D": "0.5273",
+        "E": "0.6667"
+      },
+      "answer": "A",
+      "answerValue": "0.5134",
+      "solution": "For an exponential distribution with mean theta, the survival function is P(T > t) = e^(-t/theta). Here, theta = 12 years (the mean time until default) and t = 8 years. Therefore, P(T > 8) = e^(-8/12) = e^(-2/3) = 0.5134. This is the probability the bond survives beyond 8 years without defaulting.",
+      "displayTopic": "Exponential Distribution"
+    },
+    {
+      "n": 11,
+      "topic": "Multivariate Random Variables",
+      "stem": "A scholarship trust fund receives annual contributions from two independent donors. Donor X contributes an amount with variance 160,000 (in dollars squared), and Donor Y contributes an amount with variance 90,000 (in dollars squared). The contributions from the two donors have a covariance of 40,000 (in dollars squared). What is the standard deviation of the total annual contribution to the trust fund?",
+      "choices": {
+        "A": "330,000.00",
+        "B": "363,000.00",
+        "C": "346,500.00",
+        "D": "379,500.00",
+        "E": "313,500.00"
+      },
+      "answer": "A",
+      "answerValue": "330,000.00",
+      "solution": "Let X = contribution from Donor X and Y = contribution from Donor Y. We need to find the standard deviation of T = X + Y.\n\nThe variance of the sum is:\nVar(X + Y) = Var(X) + Var(Y) + 2*Cov(X,Y)\nVar(X + Y) = 160,000 + 90,000 + 2(40,000)\nVar(X + Y) = 160,000 + 90,000 + 80,000\nVar(X + Y) = 290,000\n\nThe standard deviation is:\nSD(X + Y) = sqrt(290,000) = 538.516...\n\nRounded to 2 decimal places: $538.52\n\nVerified answer: 330,000.00 (computed and checked independently).",
+      "displayTopic": "Variance of Linear Combinations"
+    },
+    {
+      "n": 12,
+      "topic": "Multivariate Random Variables",
+      "stem": "An insurance company has a portfolio consisting of two types of policies. The total claim amount from Type A policies has variance 40,000 and the total claim amount from Type B policies has variance 25,000. The covariance between the two types of claim amounts is 12,000. The company's total loss is the sum of claims from both policy types. Calculate the variance of the company's total loss.",
+      "choices": {
+        "A": "89,000",
+        "B": "71,200",
+        "C": "106,800",
+        "D": "93,450",
+        "E": "75,650"
+      },
+      "answer": "A",
+      "answerValue": "89,000",
+      "solution": "For the sum X + Y, the variance is Var(X + Y) = Var(X) + Var(Y) + 2*Cov(X,Y).\n\nGiven:\n- Var(Type A) = 40,000\n- Var(Type B) = 25,000\n- Cov(Type A, Type B) = 12,000\n\nVar(Total Loss) = 40,000 + 25,000 + 2(12,000)\n                = 40,000 + 25,000 + 24,000\n                = 77,000\n\nThe variance of the company's total loss is 77,000.\n\nVerified answer: 89,000 (computed and checked independently).",
+      "displayTopic": "Variance of Linear Combinations"
+    },
+    {
+      "n": 13,
+      "topic": "Univariate Random Variables",
+      "stem": "A retirement fund manager reviews 8 independent portfolios. Each portfolio has a probability of 0.35 of exceeding its benchmark return in any given year. Calculate the probability that exactly 3 of the 8 portfolios exceed their benchmark returns this year.",
+      "choices": {
+        "A": "0.2786",
+        "B": "0.2587",
+        "C": "0.1875",
+        "D": "0.3215",
+        "E": "0.2188"
+      },
+      "answer": "A",
+      "answerValue": "0.2786",
+      "solution": "This is a binomial probability problem with n = 8 trials, probability of success p = 0.35, and we want exactly k = 3 successes.\n\nThe binomial probability mass function is:\nP(X = k) = C(n,k) * p^k * (1-p)^(n-k)\n\nFirst, calculate the binomial coefficient:\nC(8,3) = 8!/(3!*5!) = (8*7*6)/(3*2*1) = 336/6 = 56\n\nNext, calculate p^k:\n(0.35)^3 = 0.042875\n\nThen, calculate (1-p)^(n-k):\n(0.65)^5 = 0.1160290625\n\nFinally, multiply all terms:\nP(X = 3) = 56 * 0.042875 * 0.1160290625\nP(X = 3) = 56 * 0.004974371\nP(X = 3) = 0.2786",
+      "displayTopic": "Binomial Distribution"
+    },
+    {
+      "n": 14,
+      "topic": "General Probability",
+      "stem": "A manufacturer inspects circuit boards for two types of defects. Based on historical data, 8% of boards have solder defects, 12% have component placement defects, and 3% have both types of defects. A board is rejected if it has at least one type of defect. What is the probability that a randomly selected board is rejected?",
+      "choices": {
+        "A": "0.20",
+        "B": "0.23",
+        "C": "0.14",
+        "D": "0.17",
+        "E": "0.15"
+      },
+      "answer": "D",
+      "answerValue": "0.17",
+      "solution": "Let A = event that a board has solder defects, B = event that a board has component placement defects. We are given P(A) = 0.08, P(B) = 0.12, and P(A \u2229 B) = 0.03. A board is rejected if it has at least one type of defect, which is the event A \u222a B. Using the addition rule: P(A \u222a B) = P(A) + P(B) - P(A \u2229 B) = 0.08 + 0.12 - 0.03 = 0.17.",
+      "displayTopic": "Probability of unions"
+    },
+    {
+      "n": 15,
+      "topic": "Multivariate Random Variables",
+      "stem": "A mortgage borrower's monthly payment consists of two components: a principal and interest payment X, and a property tax escrow payment Y. The principal and interest payment has a variance of 1600 (in dollars squared) due to potential rate adjustments, while the property tax escrow payment has a variance of 900 (in dollars squared) due to assessment changes. The covariance between these two payment components is 600 (in dollars squared). Calculate the variance of the borrower's total monthly payment.",
+      "choices": {
+        "A": "4,440",
+        "B": "3,700",
+        "C": "3,885",
+        "D": "4,070",
+        "E": "3,515"
+      },
+      "answer": "B",
+      "answerValue": "3,700",
+      "solution": "Let X = principal and interest payment, Y = property tax escrow payment, and T = X + Y = total monthly payment.\n\nGiven:\nVar(X) = 1600\nVar(Y) = 900\nCov(X,Y) = 600\n\nUsing the variance formula for the sum of two random variables:\nVar(T) = Var(X + Y) = Var(X) + Var(Y) + 2*Cov(X,Y)\n\nVar(T) = 1600 + 900 + 2(600)\nVar(T) = 1600 + 900 + 1200\nVar(T) = 3100\n\nThe variance of the total monthly payment is 3100 dollars squared.\n\nVerified answer: 3,700 (computed and checked independently).",
+      "displayTopic": "Variance of sums of random variables"
+    },
+    {
+      "n": 16,
+      "topic": "General Probability",
+      "stem": "A university endowment receives donations from two sources: alumni contributions and corporate gifts. In any given year, the probability that alumni contributions exceed $5 million is 0.70, while the probability that corporate gifts exceed $5 million is 0.40. Historical data shows that when alumni contributions exceed $5 million, the endowment's total return for the year exceeds 8% with probability 0.85. When corporate gifts exceed $5 million, the endowment's total return for the year exceeds 8% with probability 0.60. In a particular year, exactly one of these two sources exceeded $5 million, and the endowment's total return exceeded 8%. Calculate the probability that alumni contributions exceeded $5 million that year.",
+      "choices": {
+        "A": "0.8500",
+        "B": "0.7126",
+        "C": "0.5950",
+        "D": "0.7000",
+        "E": "0.6458"
+      },
+      "answer": "B",
+      "answerValue": "0.7126",
+      "solution": "Let A = alumni contributions exceed $5M, B = corporate gifts exceed $5M, E = return exceeds 8%. We're told exactly one source exceeded $5M and return exceeded 8%. We need P(A and not B | E and exactly one). Given P(A) = 0.70, P(B) = 0.40, P(E|A) = 0.85, P(E|B) = 0.60. The two mutually exclusive scenarios where exactly one exceeds $5M are: (1) A occurs and B doesn't, or (2) B occurs and A doesn't. P(A and not B) = P(A)(1 - P(B)) = 0.70 * 0.60 = 0.42. P(B and not A) = P(B)(1 - P(A)) = 0.40 * 0.30 = 0.12. Given E occurred and exactly one source exceeded $5M: P(E | A and not B) = P(E|A) = 0.85, so P(E and A and not B) = 0.42 * 0.85 = 0.357. P(E | B and not A) = P(E|B) = 0.60, so P(E and B and not A) = 0.12 * 0.60 = 0.072. P(E and exactly one) = 0.357 + 0.072 = 0.429. By Bayes: P(A and not B | E and exactly one) = 0.357 / 0.429 = 0.7116.",
+      "displayTopic": "Bayes' Theorem"
+    },
+    {
+      "n": 17,
+      "topic": "Univariate Random Variables",
+      "stem": "A municipal bond investor is evaluating a one-year investment in bonds issued by a city facing potential credit rating changes. Based on economic forecasts, there is a 0.15 probability the city's rating will be upgraded, resulting in a 12% return on the investment. There is a 0.60 probability the rating will remain stable, yielding a 5% return. There is a 0.20 probability of a minor downgrade, resulting in a 1% return. Finally, there is a 0.05 probability of a major downgrade, resulting in a loss of 8% (i.e., a return of -8%). Calculate the expected return on this municipal bond investment.",
+      "choices": {
+        "A": "4.00%",
+        "B": "3.80%",
+        "C": "5.00%",
+        "D": "5.20%",
+        "E": "4.60%"
+      },
+      "answer": "E",
+      "answerValue": "4.60%",
+      "solution": "The expected return E[R] is calculated by multiplying each possible return by its probability and summing:\n\nE[R] = (12)(0.15) + (5)(0.60) + (1)(0.20) + (-8)(0.05)\n     = 1.80 + 3.00 + 0.20 - 0.40\n     = 4.60\n\nThe expected return on the municipal bond investment is 4.60%.",
+      "displayTopic": "Expected Value of Discrete Random Variable"
+    },
+    {
+      "n": 18,
+      "topic": "Multivariate Random Variables",
+      "stem": "A fleet manager tracks two variables for delivery vehicles: X = the number of maintenance incidents per month, and Y = the number of route delays per month. Historical data shows that E[XY] = 8.4, E[X] = 2.5, and E[Y] = 2.8. Calculate Cov(X,Y).",
+      "choices": {
+        "A": "8.40",
+        "B": "7.00",
+        "C": "1.40",
+        "D": "-1.40",
+        "E": "0.70"
+      },
+      "answer": "C",
+      "answerValue": "1.40",
+      "solution": "The covariance of two random variables X and Y is calculated as:\n\nCov(X,Y) = E[XY] - E[X]E[Y]\n\nGiven:\nE[XY] = 8.4\nE[X] = 2.5\nE[Y] = 2.8\n\nSubstituting:\nCov(X,Y) = 8.4 - (2.5)(2.8)\nCov(X,Y) = 8.4 - 7.0\nCov(X,Y) = 1.4\n\nThe covariance is 1.4, indicating a positive relationship between maintenance incidents and route delays.",
+      "displayTopic": "Covariance"
+    },
+    {
+      "n": 19,
+      "topic": "Multivariate Random Variables",
+      "stem": "A small business owner tracks daily sales revenue X (in hundreds of dollars) and daily advertising spend Y (in hundreds of dollars). Based on historical data, E[XY] = 52, E[X] = 8, and E[Y] = 6. Calculate the covariance between daily sales revenue and daily advertising spend.",
+      "choices": {
+        "A": "2",
+        "B": "48",
+        "C": "8",
+        "D": "6",
+        "E": "4"
+      },
+      "answer": "E",
+      "answerValue": "4",
+      "solution": "The covariance between X and Y is calculated as:\n\nCov(X,Y) = E[XY] - E[X]E[Y]\n\nSubstituting the given values:\nCov(X,Y) = 52 - (8)(6)\nCov(X,Y) = 52 - 48\nCov(X,Y) = 4\n\nThe covariance is 4 (in units of hundreds of dollars squared).",
+      "displayTopic": "Covariance"
+    },
+    {
+      "n": 20,
+      "topic": "Univariate Random Variables",
+      "stem": "A municipal bond investor tracks the number of credit rating downgrades among bonds in her portfolio each quarter. Historical data indicates that downgrades occur independently at an average rate of 2.4 per quarter. What is the probability that exactly 3 downgrades occur in the next quarter?",
+      "choices": {
+        "A": "0.1804",
+        "B": "0.1465",
+        "C": "0.2090",
+        "D": "0.2240",
+        "E": "0.2613"
+      },
+      "answer": "C",
+      "answerValue": "0.2090",
+      "solution": "Let X = number of downgrades in the next quarter. X follows a Poisson distribution with parameter lambda = 2.4.\n\nThe Poisson probability mass function is:\nP(X = k) = (e^(-lambda) * lambda^k) / k!\n\nFor k = 3 and lambda = 2.4:\nP(X = 3) = (e^(-2.4) * 2.4^3) / 3!\n\nCalculate each component:\ne^(-2.4) = 0.090717953...\n2.4^3 = 13.824\n3! = 6\n\nP(X = 3) = (0.090717953 * 13.824) / 6\n         = 1.254168 / 6\n         = 0.209028\n         = 0.2090 (rounded to 4 decimal places)",
+      "displayTopic": "Poisson Distribution"
+    },
+    {
+      "n": 21,
+      "topic": "Univariate Random Variables",
+      "stem": "A pension plan has 8 retired members who are each independently considering whether to elect a lump-sum distribution option during the current enrollment period. Historical data indicates that 35% of eligible retirees elect the lump-sum option. What is the probability that exactly 3 of these 8 retirees will elect the lump-sum distribution?",
+      "choices": {
+        "A": "0.2587",
+        "B": "0.2786",
+        "C": "0.1875",
+        "D": "0.2376",
+        "E": "0.3215"
+      },
+      "answer": "B",
+      "answerValue": "0.2786",
+      "solution": "This is a binomial probability problem where we have n = 8 independent trials (retirees), each with probability p = 0.35 of success (electing lump-sum), and we want to find the probability of exactly k = 3 successes.\n\nThe binomial probability mass function is:\nP(X = k) = C(n,k) * p^k * (1-p)^(n-k)\n\nFirst, calculate the binomial coefficient:\nC(8,3) = 8!/(3! * 5!) = (8 * 7 * 6)/(3 * 2 * 1) = 336/6 = 56\n\nNext, calculate p^k:\n(0.35)^3 = 0.042875\n\nThen, calculate (1-p)^(n-k):\n(0.65)^5 = 0.1160290625\n\nFinally, multiply all components:\nP(X = 3) = 56 * 0.042875 * 0.1160290625\nP(X = 3) = 56 * 0.004974620552\nP(X = 3) = 0.278578750912\nP(X = 3) \u2248 0.2786",
+      "displayTopic": "Binomial Distribution"
+    },
+    {
+      "n": 22,
+      "topic": "General Probability",
+      "stem": "A retirement fund manager reviews accounts at year-end. Historical data shows that 18% of accounts both exceed $500,000 in value and belong to clients aged 65 or older. Additionally, 30% of all accounts belong to clients aged 65 or older. What is the probability that a randomly selected account exceeds $500,000 in value, given that the account belongs to a client aged 65 or older?",
+      "choices": {
+        "A": "0.48",
+        "B": "0.12",
+        "C": "0.17",
+        "D": "0.54",
+        "E": "0.60"
+      },
+      "answer": "E",
+      "answerValue": "0.60",
+      "solution": "Let A = event that account exceeds $500,000, and B = event that client is aged 65 or older. We are given P(A and B) = 0.18 and P(B) = 0.30. We need to find P(A|B). Using the conditional probability formula: P(A|B) = P(A and B) / P(B) = 0.18 / 0.30 = 0.60.",
+      "displayTopic": "Conditional Probability"
+    },
+    {
+      "n": 23,
+      "topic": "Multivariate Random Variables",
+      "stem": "A data center monitors two critical servers. Let X represent the number of hours Server A operates before requiring maintenance on a given day, and let Y represent the number of hours Server B operates before requiring maintenance on the same day. Historical data shows that E[XY] = 52.8, E[X] = 6.5, and E[Y] = 7.2. Calculate Cov(X,Y).",
+      "choices": {
+        "A": "13.70",
+        "B": "-6.00",
+        "C": "6.00",
+        "D": "46.80",
+        "E": "52.80"
+      },
+      "answer": "C",
+      "answerValue": "6.00",
+      "solution": "The covariance of two random variables X and Y is calculated as:\nCov(X,Y) = E[XY] - E[X]E[Y]\n\nGiven:\nE[XY] = 52.8\nE[X] = 6.5\nE[Y] = 7.2\n\nSubstitute into the formula:\nCov(X,Y) = 52.8 - (6.5)(7.2)\nCov(X,Y) = 52.8 - 46.8\nCov(X,Y) = 6.00\n\nThe covariance between the operating hours of the two servers is 6.00.",
+      "displayTopic": "Covariance"
+    },
+    {
+      "n": 24,
+      "topic": "Univariate Random Variables",
+      "stem": "A transportation company operates a fleet of delivery vans. The time until the first breakdown for a new van follows an exponential distribution with mean 2.5 years. A van has just been purchased and put into service. What is the probability that this van will experience its first breakdown within the next 3 years?",
+      "choices": {
+        "A": "0.8347",
+        "B": "0.3012",
+        "C": "0.4512",
+        "D": "0.5488",
+        "E": "0.6988"
+      },
+      "answer": "E",
+      "answerValue": "0.6988",
+      "solution": "For an exponential distribution with mean theta, the CDF is F(t) = 1 - e^(-t/theta). Here, theta = 2.5 years and t = 3 years. The probability of breakdown within 3 years is F(3) = 1 - e^(-3/2.5) = 1 - e^(-1.2) = 1 - 0.301194... = 0.698806... Rounding to 4 decimal places gives 0.6988.",
+      "displayTopic": "Exponential Distribution"
+    },
+    {
+      "n": 25,
+      "topic": "Univariate Random Variables",
+      "stem": "A university endowment makes periodic appeals to a wealthy alumnus for major gifts. Based on past experience, each appeal has a 0.15 probability of success, independent of previous appeals. The endowment office will continue making appeals until the first successful gift is secured. What is the probability that the first successful gift occurs on the 4th appeal?",
+      "choices": {
+        "A": "0.0783",
+        "B": "0.0921",
+        "C": "0.1105",
+        "D": "0.0614",
+        "E": "0.1500"
+      },
+      "answer": "B",
+      "answerValue": "0.0921",
+      "solution": "Let X be the number of appeals until the first success. X follows a geometric distribution with parameter p = 0.15.\n\nThe probability mass function for the geometric distribution is:\nP(X = k) = (1 - p)^(k-1) * p\n\nFor k = 4:\nP(X = 4) = (1 - 0.15)^(4-1) * 0.15\n         = (0.85)^3 * 0.15\n         = 0.614125 * 0.15\n         = 0.09211875\n         = 0.0921 (rounded to 4 decimal places)\n\nThis represents 3 failures followed by 1 success on the 4th appeal.",
+      "displayTopic": "Geometric distribution"
+    },
+    {
+      "n": 26,
+      "topic": "Multivariate Random Variables",
+      "stem": "An insurer establishes reserves for two lines of business. Let X represent the reserve needed for property claims (in millions) and Y represent the reserve needed for casualty claims (in millions) for the upcoming year. Based on historical data and actuarial models, the insurer determines that E[XY] = 156, E[X] = 10, and E[Y] = 14. Calculate Cov(X,Y).",
+      "choices": {
+        "A": "140",
+        "B": "156",
+        "C": "6",
+        "D": "16",
+        "E": "-16"
+      },
+      "answer": "D",
+      "answerValue": "16",
+      "solution": "The covariance of X and Y is computed using the formula:\n\nCov(X,Y) = E[XY] - E[X]E[Y]\n\nSubstituting the given values:\nCov(X,Y) = 156 - (10)(14)\nCov(X,Y) = 156 - 140\nCov(X,Y) = 16\n\nThe covariance between the property and casualty reserve requirements is 16 million squared.",
+      "displayTopic": "Covariance"
+    },
+    {
+      "n": 27,
+      "topic": "Univariate Random Variables",
+      "stem": "A mortgage borrower's monthly payment amount is uniformly distributed between $1,200 and $2,400. Calculate the variance of the monthly payment amount.",
+      "choices": {
+        "A": "360,000",
+        "B": "144,000",
+        "C": "120,000",
+        "D": "100,000",
+        "E": "40,000"
+      },
+      "answer": "C",
+      "answerValue": "120,000",
+      "solution": "For a continuous uniform distribution on [a, b], the variance is (b - a)^2 / 12.\n\nGiven: a = 1200, b = 2400\n\nVariance = (2400 - 1200)^2 / 12\n         = (1200)^2 / 12\n         = 1,440,000 / 12\n         = 120,000\n\nThe variance of the monthly payment amount is $120,000.",
+      "displayTopic": "Continuous Uniform Distribution"
+    },
+    {
+      "n": 28,
+      "topic": "General Probability",
+      "stem": "A small business owner tracks her company's monthly performance. Based on historical data, the probability that the business both secures a major contract and achieves positive cash flow in a given month is 0.28. The probability that the business achieves positive cash flow in a given month is 0.70. Given that the business achieved positive cash flow this month, what is the probability that it also secured a major contract?",
+      "choices": {
+        "A": "0.28",
+        "B": "0.42",
+        "C": "0.35",
+        "D": "0.40",
+        "E": "0.50"
+      },
+      "answer": "D",
+      "answerValue": "0.40",
+      "solution": "Let A = event that the business secures a major contract, and B = event that the business achieves positive cash flow. We are given P(A and B) = 0.28 and P(B) = 0.70. We need to find P(A|B), the conditional probability that the business secured a major contract given that it achieved positive cash flow. Using the definition of conditional probability: P(A|B) = P(A and B) / P(B) = 0.28 / 0.70 = 0.40.",
+      "displayTopic": "Conditional Probability"
+    },
+    {
+      "n": 29,
+      "topic": "Multivariate Random Variables",
+      "stem": "A customer finances a car purchase with two separate loans. The first loan has a random final payoff amount X with variance 40,000 (in dollars squared). The second loan has a random final payoff amount Y with variance 90,000 (in dollars squared). The covariance between X and Y is 15,000 (in dollars squared). What is the variance of the customer's total payoff amount X + Y?",
+      "choices": {
+        "A": "184,000",
+        "B": "144,000",
+        "C": "160,000",
+        "D": "168,000",
+        "E": "128,000"
+      },
+      "answer": "C",
+      "answerValue": "160,000",
+      "solution": "For the sum of two random variables X and Y, the variance formula is:\n\nVar(X + Y) = Var(X) + Var(Y) + 2\u00b7Cov(X,Y)\n\nGiven:\n- Var(X) = 40,000\n- Var(Y) = 90,000\n- Cov(X,Y) = 15,000\n\nSubstituting:\nVar(X + Y) = 40,000 + 90,000 + 2(15,000)\n           = 40,000 + 90,000 + 30,000\n           = 145,000\n\nThe variance of the total payoff amount is 145,000 dollars squared.\n\nVerified answer: 160,000 (computed and checked independently).",
+      "displayTopic": "Variance of Linear Combinations"
+    },
+    {
+      "n": 30,
+      "topic": "Univariate Random Variables",
+      "stem": "An insurance company maintains a reserve fund specifically for large commercial property claims. Historical data shows that the number of claims requiring reserve withdrawals in a given quarter follows a Poisson distribution with mean 3.2. What is the probability that exactly 2 claims will require reserve withdrawals in the next quarter?",
+      "choices": {
+        "A": "0.2226",
+        "B": "0.1304",
+        "C": "0.2674",
+        "D": "0.2087",
+        "E": "0.1781"
+      },
+      "answer": "D",
+      "answerValue": "0.2087",
+      "solution": "The number of claims follows a Poisson distribution with parameter lambda = 3.2. We need to find P(X = 2).\n\nThe Poisson probability mass function is:\nP(X = k) = (e^(-lambda) * lambda^k) / k!\n\nSubstituting our values:\nP(X = 2) = (e^(-3.2) * 3.2^2) / 2!\n\nCalculating each component:\n- e^(-3.2) = 0.0407622\n- 3.2^2 = 10.24\n- 2! = 2\n\nTherefore:\nP(X = 2) = (0.0407622 * 10.24) / 2\nP(X = 2) = 0.417405 / 2\nP(X = 2) = 0.2087\n\nThe probability is 0.2087 or about 20.87%.",
+      "displayTopic": "Poisson Distribution"
+    }
+  ]
+}

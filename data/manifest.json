@@ -8,6 +8,15 @@
       "questions": 30,
       "timeLimitMinutes": 150,
       "file": "data/fm/fm-1789433940.json"
+    },
+    {
+      "id": "fm-1789478122",
+      "track": "FM",
+      "title": "FM Practice Exam",
+      "created": "2026-09-15T13:15:22.346056+00:00",
+      "questions": 30,
+      "timeLimitMinutes": 150,
+      "file": "data/fm/fm-1789478122.json"
     }
   ],
   "P": [
@@ -19,6 +28,15 @@
       "questions": 30,
       "timeLimitMinutes": 180,
       "file": "data/p/p-1789434322.json"
+    },
+    {
+      "id": "p-1789478395",
+      "track": "P",
+      "title": "P Practice Exam",
+      "created": "2026-09-15T13:19:55.361076+00:00",
+      "questions": 30,
+      "timeLimitMinutes": 180,
+      "file": "data/p/p-1789478395.json"
     }
   ]
 }
