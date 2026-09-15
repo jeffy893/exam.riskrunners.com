@@ -362,7 +362,7 @@ def build_macaulay_duration(rng):
     pvs = [(1 + i) ** (-t) for t in times]
     dur = sum(t * pv for t, pv in zip(times, pvs)) / sum(pvs)
     return {
-        "topic": "Duration and Immunization",
+        "topic": "General Cash Flows and Portfolios",
         "stem": (
             f"A cash flow stream pays 1 at the end of each year for {n} years. Using an "
             f"annual effective interest rate of {i*100:.0f}%, calculate the Macaulay "

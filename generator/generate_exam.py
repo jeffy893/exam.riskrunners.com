@@ -34,6 +34,8 @@ from datetime import datetime, timezone
 
 from content_fm import FM_BUILDERS
 from content_p import P_BUILDERS
+from llm_authoring import author_problem, VALID_RECIPES
+import syllabus
 
 # --------------------------------------------------------------------------
 # Paths
@@ -57,6 +59,18 @@ TRACKS = {
 }
 MAX_KEEP = 10
 LETTERS = ["A", "B", "C", "D", "E"]
+
+# Theme hints nudge the LLM to vary the surface story so problems don't read
+# like templates. One is drawn at random per problem.
+SEED_HINTS = [
+    "a small business owner", "a retirement fund", "a university endowment",
+    "a municipal bond investor", "a mortgage borrower", "a pension plan",
+    "an insurance reserve", "a savings account", "a startup's runway",
+    "a real-estate purchase", "a scholarship trust", "a car loan",
+    "a manufacturing line", "a call center", "an e-commerce site",
+    "a clinical trial", "a fleet of vehicles", "a data center's servers",
+    "a portfolio of policies", "a quality-control process",
+]
 
 
 # --------------------------------------------------------------------------
@@ -142,21 +156,92 @@ def _build_question(rng, builder, number):
 # --------------------------------------------------------------------------
 # Exam assembly
 # --------------------------------------------------------------------------
-def build_exam(track, rng):
+def _weighted_plan(track, rng, n_q):
+    """Build a per-question plan honoring the official SOA topic weightings.
+
+    Returns a list of length n_q; each item is a dict:
+        {"group": <topic group>, "recipe": <llm recipe or None>,
+         "builder": <template builder fn>}
+    The list is shuffled so topics are interleaved on the exam, but the COUNTS
+    per group match syllabus.allocate() (i.e. the syllabus midpoints).
+    """
+    alloc = syllabus.allocate(track, n_q)
+
+    # recipes grouped by topic
+    recipes_by_group = {}
+    for recipe, group in syllabus.RECIPE_GROUPS[track].items():
+        recipes_by_group.setdefault(group, []).append(recipe)
+
+    # template builders grouped by topic (by function __name__)
+    builders_by_group = {}
+    for b in TRACKS[track]["builders"]:
+        g = syllabus.TEMPLATE_GROUPS[track].get(b.__name__)
+        if g:
+            builders_by_group.setdefault(g, []).append(b)
+
+    plan = []
+    for group, count in alloc.items():
+        group_recipes = recipes_by_group.get(group)
+        # FM "General Cash Flows, Portfolios & ALM" has no closed-form verifiable
+        # recipe in our set, so those questions come from the template builders
+        # (duration, dollar-weighted yield) — group_recipes stays None.
+        group_builders = builders_by_group.get(group, TRACKS[track]["builders"])
+
+        for j in range(count):
+            recipe = None
+            if group_recipes:
+                recipe = group_recipes[j % len(group_recipes)]
+            builder = group_builders[j % len(group_builders)]
+            plan.append({"group": group, "recipe": recipe, "builder": builder})
+
+    rng.shuffle(plan)
+    return plan
+
+
+def build_exam(track, rng, source="auto", client=None):
+    """Build a 30-question exam.
+
+    source:
+      "template" -> deterministic Python templates only (offline, free).
+      "bedrock"  -> LLM-authored + Python-verified; fail hard if unavailable.
+      "auto"     -> try LLM per problem, fall back to a template on any failure.
+    """
     spec = TRACKS[track]
-    builders = spec["builders"]
     n_q = spec["config"]["numQuestions"]
 
-    # Spread question topics: cycle builders, shuffling order each pass so no two
-    # exams present the same sequence, and no builder dominates.
-    order = []
-    while len(order) < n_q:
-        pool = builders[:]
-        rng.shuffle(pool)
-        order.extend(pool)
-    order = order[:n_q]
+    plan = _weighted_plan(track, rng, n_q)
 
-    questions = [_build_question(rng, b, i + 1) for i, b in enumerate(order)]
+    questions = []
+    llm_count = 0
+    for i, item in enumerate(plan):
+        num = i + 1
+        want_llm = (source in ("bedrock", "auto") and client is not None
+                    and item["recipe"])
+        q = None
+        if want_llm:
+            hint = rng.choice(SEED_HINTS)
+            try:
+                q = author_problem(client, track, item["recipe"], num, rng, hint)
+                q.pop("_source", None)
+                llm_count += 1
+                print(f"  [{num:>2}/{n_q}] LLM: {item['recipe']} ({item['group']})")
+            except Exception as e:
+                if source == "bedrock":
+                    raise
+                print(f"  [{num:>2}/{n_q}] LLM failed ({str(e)[:50]}); template ({item['group']})")
+        if q is None:
+            # template path (also used for groups with no verifiable recipe)
+            q = _build_question(rng, item["builder"], num)
+        # Tag with the authoritative syllabus group; keep the finer LLM/template
+        # label as displayTopic for the UI.
+        q["displayTopic"] = q.get("topic", item["group"])
+        q["topic"] = item["group"]
+        questions.append(q)
+
+    # Realized distribution by SYLLABUS GROUP (authoritative, matches weights).
+    dist = {}
+    for q in questions:
+        dist[q["topic"]] = dist.get(q["topic"], 0) + 1
 
     ts = int(time.time())
     exam_id = f"{track.lower()}-{ts}"
@@ -166,6 +251,11 @@ def build_exam(track, rng):
         "trackName": spec["name"],
         "created": datetime.now(timezone.utc).isoformat(),
         "config": spec["config"],
+        "source": source,
+        "llmQuestions": llm_count,
+        "syllabusWeights": {g: syllabus.weight_label(track, g)
+                            for g in syllabus.WEIGHTS[track]},
+        "topicDistribution": dist,
         "questions": questions,
     }
 
@@ -237,15 +327,45 @@ def main(argv=None):
                         help="Max exams to keep per track (default 10)")
     parser.add_argument("--seed", type=int, default=None,
                         help="RNG seed for reproducible output (testing only)")
+    parser.add_argument("--source", choices=["auto", "bedrock", "template"],
+                        default=os.environ.get("EXAM_SOURCE", "auto"),
+                        help="Problem source: auto (LLM with template fallback, "
+                             "default), bedrock (LLM only), or template (offline)")
+    parser.add_argument("--model", default=None,
+                        help="Override Bedrock model id (else BEDROCK_MODEL_ID/.env)")
+    parser.add_argument("--region", default=None,
+                        help="Override AWS region (else AWS_REGION/.env)")
     args = parser.parse_args(argv)
 
     rng = random.Random(args.seed)
 
-    print(f"Generating a {args.track} ({TRACKS[args.track]['name']}) practice exam...")
-    exam = build_exam(args.track, rng)
+    # Set up Bedrock unless the user forced templates.
+    client = None
+    if args.source in ("auto", "bedrock"):
+        try:
+            from bedrock_client import BedrockClient, BedrockUnavailable
+            client = BedrockClient(region=args.region, model_id=args.model)
+            client.ping()
+            print(f"  Bedrock ready: {client.model_id} @ {client.region}")
+        except Exception as e:
+            if args.source == "bedrock":
+                print(f"ERROR: Bedrock is required but unavailable: {e}")
+                return 2
+            print(f"  Bedrock unavailable ({str(e)[:80]}); using templates.")
+            client = None
+
+    effective_source = args.source
+    if args.source in ("auto", "bedrock") and client is None:
+        effective_source = "template"
+
+    print(f"Generating a {args.track} ({TRACKS[args.track]['name']}) practice "
+          f"exam [source: {effective_source}]...")
+    exam = build_exam(args.track, rng, source=effective_source, client=client)
     rel_path, count = persist(exam, args.max)
 
-    print(f"  Created {len(exam['questions'])} questions.")
+    print(f"  Created {len(exam['questions'])} questions "
+          f"({exam.get('llmQuestions', 0)} LLM-authored, "
+          f"{len(exam['questions']) - exam.get('llmQuestions', 0)} template).")
     print(f"  Saved to {rel_path}")
     print(f"  {args.track} library now holds {count} exam(s) (max {args.max}).")
     print("Done. Review the site, then push to main when ready.")

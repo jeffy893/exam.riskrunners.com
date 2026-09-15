@@ -84,13 +84,13 @@
           </div>
           <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
-        <button id="btn-complete" class="btn btn-success btn-complete">Complete Exam</button>
       </div>
     </div>
     <div class="container">
       <div id="exam-questions"></div>
-      <button id="btn-complete-bottom" class="btn btn-success btn-block">Complete Exam</button>
     </div>
+    <!-- Floats with the page, pinned to the bottom-right -->
+    <button id="btn-complete" class="btn btn-success btn-complete-float">Complete Exam</button>
   </section>
 
   <!-- === RESULTS / REVIEW VIEW === -->
@@ -134,6 +134,7 @@
   <div id="toast" class="toast"></div>
 
   <script src="js/storage.js"></script>
+  <script src="js/clipboard.js"></script>
   <script src="js/pdf.js"></script>
   <script src="js/exam.js"></script>
   <script src="js/results.js"></script>

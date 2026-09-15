@@ -7,3 +7,11 @@ __pycache__/
 
 # Local dev
 *.log
+
+# Local secrets / config — never commit. Use .env.example as the reference.
+.env
+
+# Never commit AWS credentials
+.aws/
+*.pem
+credentials

@@ -46,7 +46,12 @@ const Exam = (() => {
       card.innerHTML = `
         <div class="question-head">
           <span class="question-num">Question ${q.n}</span>
-          <span class="question-topic">${escapeHtml(q.topic)}</span>
+          <div class="question-head-right">
+            <span class="question-topic">${escapeHtml(q.displayTopic || q.topic)}</span>
+            <button class="btn-copy" data-copy="${q.n}" title="Copy problem to clipboard" aria-label="Copy problem to clipboard">
+              <span class="copy-icon">⧉</span> Copy
+            </button>
+          </div>
         </div>
         <div class="question-stem">${escapeHtml(q.stem)}</div>
         <div class="choice-list">${choices}</div>`;
@@ -57,6 +62,13 @@ const Exam = (() => {
   function bindControls() {
     const wrap = document.getElementById('exam-questions');
     wrap.onclick = (e) => {
+      const copyBtn = e.target.closest('.btn-copy');
+      if (copyBtn) {
+        const q = current.questions.find(x => String(x.n) === copyBtn.dataset.copy);
+        Clipboard.copyProblem(q, copyBtn, { includeSolution: false });
+        return;
+      }
+
       const choice = e.target.closest('.choice');
       if (!choice) return;
       const qNum = choice.dataset.q;
@@ -70,7 +82,6 @@ const Exam = (() => {
     };
 
     document.getElementById('btn-complete').onclick = complete;
-    document.getElementById('btn-complete-bottom').onclick = complete;
   }
 
   function updateProgress() {

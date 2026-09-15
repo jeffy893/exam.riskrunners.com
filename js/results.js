@@ -103,7 +103,12 @@ const Results = (() => {
       card.innerHTML = `
         <div class="question-head">
           <span class="question-num">Question ${q.n}</span>
-          <span class="question-topic">${escapeHtml(q.topic)}</span>
+          <div class="question-head-right">
+            <span class="question-topic">${escapeHtml(q.displayTopic || q.topic)}</span>
+            <button class="btn-copy" data-copy="${q.n}" title="Copy problem &amp; solution to clipboard" aria-label="Copy problem and solution to clipboard">
+              <span class="copy-icon">⧉</span> Copy
+            </button>
+          </div>
         </div>
         <div class="question-stem">${escapeHtml(q.stem)}</div>
         <div class="choice-list">${choices}</div>
@@ -119,6 +124,13 @@ const Results = (() => {
     });
 
     wrap.onclick = (e) => {
+      const copyBtn = e.target.closest('.btn-copy');
+      if (copyBtn) {
+        const q = exam.questions.find(x => String(x.n) === copyBtn.dataset.copy);
+        Clipboard.copyProblem(q, copyBtn, { includeSolution: true });
+        return;
+      }
+
       const btn = e.target.closest('.solution-toggle');
       if (!btn) return;
       const n = btn.dataset.toggle;

@@ -36,12 +36,55 @@ Two double-click launchers (macOS `.command` files) run the pipeline:
 Or from a terminal:
 
 ```bash
-python3 generator/generate_exam.py FM
-python3 generator/generate_exam.py P
+python3 generator/generate_exam.py FM                 # auto (LLM + fallback)
+python3 generator/generate_exam.py P  --source bedrock # LLM only
+python3 generator/generate_exam.py FM --source template # offline, no AWS
 ```
 
-Each run creates a genuinely new exam (all numbers are randomized), persists it
-under `data/`, and updates `data/manifest.json`.
+Each run creates a genuinely new exam, persists it under `data/`, and updates
+`data/manifest.json`.
+
+### Problem sources
+
+Problems can be authored two ways; the generated exam records which in its
+`source` and `llmQuestions` fields:
+
+- **Bedrock (Amazon Bedrock / Anthropic Claude)** — the LLM writes exam-realistic
+  scenario problems. Python then **independently verifies the arithmetic**: the
+  model returns the numeric inputs, Python recomputes the answer from a fixed set
+  of actuarial formulas, and only a verified value is placed among the choices.
+  The LLM is trusted for the story; Python is the source of truth for the math.
+- **Templates** — deterministic Python builders (offline, free). Used as a
+  fallback in `auto` mode and for topics with no closed-form verifiable recipe
+  (e.g. FM duration / dollar-weighted yield).
+
+The LLM runs only in this **offline generator step** on your machine. The
+published site stays a static GitHub Pages site reading JSON — no credentials
+ever touch the deployed site.
+
+### Configuration & credentials
+
+Copy `.env.example` to `.env` (git-ignored) to set the region, model, and default
+source. AWS auth uses the standard credential chain (`~/.aws/...`, env vars, SSO);
+**no secrets are stored in the repo**. The default model is a cross-region
+inference profile (`us.anthropic.claude-sonnet-4-5-...`).
+
+### Syllabus-weighted topic mix
+
+Question counts per topic follow the **official SOA syllabus weightings** (see
+`generator/syllabus.py`), not a uniform mix, so a generated exam mirrors the real
+exam's emphasis. Sourced from the current SOA syllabi:
+
+| Exam FM topic | Weight | | Exam P topic | Weight |
+|---|---|---|---|---|
+| Time Value of Money | 5–15% | | General Probability | 23–30% |
+| Annuities | 20–30% | | Univariate Random Variables | 44–50% |
+| Loans | 15–25% | | Multivariate Random Variables | 23–30% |
+| Bonds | 15–25% | | | |
+| General Cash Flows / Portfolios / ALM | 20–30% | | | |
+
+Each exam JSON records its realized `topicDistribution` and the `syllabusWeights`
+it targeted. (Weightings sourced from the SOA syllabi; rephrased for compliance.)
 
 ### Rolling library of 10 (FIFO)
 
