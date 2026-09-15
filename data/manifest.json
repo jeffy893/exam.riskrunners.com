@@ -1,0 +1,24 @@
+{
+  "FM": [
+    {
+      "id": "fm-1789430340",
+      "track": "FM",
+      "title": "FM Practice Exam",
+      "created": "2026-09-14T23:59:00.206156+00:00",
+      "questions": 30,
+      "timeLimitMinutes": 150,
+      "file": "data/fm/fm-1789430340.json"
+    }
+  ],
+  "P": [
+    {
+      "id": "p-1789430340",
+      "track": "P",
+      "title": "P Practice Exam",
+      "created": "2026-09-14T23:59:00.248733+00:00",
+      "questions": 30,
+      "timeLimitMinutes": 180,
+      "file": "data/p/p-1789430340.json"
+    }
+  ]
+}

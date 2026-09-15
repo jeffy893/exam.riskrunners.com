@@ -1,0 +1,463 @@
+{
+  "id": "p-1789430340",
+  "track": "P",
+  "trackName": "Probability",
+  "created": "2026-09-14T23:59:00.248733+00:00",
+  "config": {
+    "numQuestions": 30,
+    "choices": 5,
+    "timeLimitMinutes": 180
+  },
+  "questions": [
+    {
+      "n": 1,
+      "topic": "Univariate Random Variables",
+      "stem": "Independent trials each succeed with probability 0.40. Calculate the probability that the first success occurs on trial 5.",
+      "choices": {
+        "A": "0.0570",
+        "B": "0.0518",
+        "C": "0.0441",
+        "D": "0.0627",
+        "E": "0.0415"
+      },
+      "answer": "B",
+      "answerValue": "0.0518",
+      "solution": "For a geometric distribution, P(X=k) = (1-p)^(k-1) p.\nP(X=5) = 0.60^4 x 0.40 = 0.129600 x 0.40 = 0.0518."
+    },
+    {
+      "n": 2,
+      "topic": "Univariate Random Variables",
+      "stem": "The lifetime of a component (in years) follows an exponential distribution with mean 10. Calculate the probability that the component lasts more than 2 year(s).",
+      "choices": {
+        "A": "0.7369",
+        "B": "0.8187",
+        "C": "0.9006",
+        "D": "0.9825",
+        "E": "0.9415"
+      },
+      "answer": "B",
+      "answerValue": "0.8187",
+      "solution": "For an exponential with mean theta, P(X > t) = e^(-t/theta).\nP(X > 2) = e^(-2/10) = 0.8187."
+    },
+    {
+      "n": 3,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X is uniformly distributed on the interval [5, 11]. Calculate the variance of X.",
+      "choices": {
+        "A": "2.8500",
+        "B": "3.6918",
+        "C": "3.0000",
+        "D": "2.4000",
+        "E": "2.6613"
+      },
+      "answer": "C",
+      "answerValue": "3.0000",
+      "solution": "For a uniform on [a, b], Var(X) = (b - a)^2 / 12.\nVar(X) = (11 - 5)^2 / 12 = 36 / 12 = 3.0000."
+    },
+    {
+      "n": 4,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A and B) = 0.24 and P(B) = 0.60. Calculate P(A | B).",
+      "choices": {
+        "A": "0.4400",
+        "B": "0.3600",
+        "C": "0.4600",
+        "D": "0.3200",
+        "E": "0.4000"
+      },
+      "answer": "E",
+      "answerValue": "0.4000",
+      "solution": "By definition, P(A|B) = P(A and B) / P(B).\nP(A|B) = 0.24 / 0.60 = 0.4000."
+    },
+    {
+      "n": 5,
+      "topic": "General Probability",
+      "stem": "Machine A produces 50% of a factory's output with a defect rate of 4%. Machine B produces the remaining 50% with a defect rate of 12%. An item selected at random is found to be defective. Calculate the probability that it came from Machine A.",
+      "choices": {
+        "A": "0.2125",
+        "B": "0.3000",
+        "C": "0.2625",
+        "D": "0.2000",
+        "E": "0.2500"
+      },
+      "answer": "E",
+      "answerValue": "0.2500",
+      "solution": "By Bayes' Theorem, P(A|D) = P(A)P(D|A) / [P(A)P(D|A) + P(B)P(D|B)].\nNumerator = 0.50 x 0.04 = 0.02000\nDenominator = 0.50 x 0.04 + 0.50 x 0.12 = 0.08000\nP(A|D) = 0.02000 / 0.08000 = 0.2500."
+    },
+    {
+      "n": 6,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A) = 0.30, P(B) = 0.35, and P(A and B) = 0.10. Calculate P(A or B).",
+      "choices": {
+        "A": "0.632",
+        "B": "0.605",
+        "C": "0.550",
+        "D": "0.495",
+        "E": "0.450"
+      },
+      "answer": "C",
+      "answerValue": "0.550",
+      "solution": "By inclusion-exclusion, P(A or B) = P(A) + P(B) - P(A and B).\nP(A or B) = 0.30 + 0.35 - 0.10 = 0.550."
+    },
+    {
+      "n": 7,
+      "topic": "Univariate Random Variables",
+      "stem": "A discrete random variable X has the following distribution: P(X=1)=0.20, P(X=2)=0.30, P(X=4)=0.50. Calculate E[X].",
+      "choices": {
+        "A": "2.800",
+        "B": "3.220",
+        "C": "2.520",
+        "D": "3.080",
+        "E": "2.380"
+      },
+      "answer": "A",
+      "answerValue": "2.800",
+      "solution": "E[X] = sum x P(X=x).\nE[X] = 1x0.20 + 2x0.30 + 4x0.50 = 2.800."
+    },
+    {
+      "n": 8,
+      "topic": "Multivariate Random Variables",
+      "stem": "For random variables X and Y, E[X] = 5, E[Y] = 4, and E[XY] = 21. Calculate Cov(X, Y).",
+      "choices": {
+        "A": "0.85",
+        "B": "1.00",
+        "C": "1.05",
+        "D": "0.95",
+        "E": "1.04"
+      },
+      "answer": "B",
+      "answerValue": "1.00",
+      "solution": "Cov(X, Y) = E[XY] - E[X]E[Y].\nCov(X, Y) = 21 - 5 x 4 = 1.00."
+    },
+    {
+      "n": 9,
+      "topic": "Multivariate Random Variables",
+      "stem": "For random variables X and Y, Var(X) = 4, Var(Y) = 9, and Cov(X, Y) = 2. Calculate Var(X + Y).",
+      "choices": {
+        "A": "19.55",
+        "B": "15.30",
+        "C": "17.00",
+        "D": "14.45",
+        "E": "14.42"
+      },
+      "answer": "C",
+      "answerValue": "17.00",
+      "solution": "Var(X + Y) = Var(X) + Var(Y) + 2 Cov(X, Y).\nVar(X + Y) = 4 + 9 + 2 x 2 = 17.00."
+    },
+    {
+      "n": 10,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X follows a binomial distribution with n = 11 trials and success probability p = 0.40. Calculate P(X = 2).",
+      "choices": {
+        "A": "0.1064",
+        "B": "0.0839",
+        "C": "0.0887",
+        "D": "0.1020",
+        "E": "0.0842"
+      },
+      "answer": "C",
+      "answerValue": "0.0887",
+      "solution": "For a binomial, P(X=k) = C(n,k) p^k (1-p)^(n-k).\nP(X=2) = C(11,2) x 0.40^2 x 0.60^9\n= 55 x 0.160000 x 0.010078 = 0.0887."
+    },
+    {
+      "n": 11,
+      "topic": "Univariate Random Variables",
+      "stem": "The number of claims X in a month follows a Poisson distribution with mean 1.5. Calculate P(X = 2).",
+      "choices": {
+        "A": "0.2636",
+        "B": "0.7490",
+        "C": "0.2126",
+        "D": "0.2887",
+        "E": "0.2510"
+      },
+      "answer": "E",
+      "answerValue": "0.2510",
+      "solution": "For a Poisson, P(X=k) = e^(-lambda) lambda^k / k!.\nP(X=2) = e^(-1.5) x 1.5^2 / 2!\n= 0.223130 x 2.2500 / 2 = 0.2510."
+    },
+    {
+      "n": 12,
+      "topic": "Univariate Random Variables",
+      "stem": "The number of claims X in a month follows a Poisson distribution with mean 2.5. Calculate P(X = 5).",
+      "choices": {
+        "A": "0.0668",
+        "B": "0.9332",
+        "C": "0.0768",
+        "D": "0.0735",
+        "E": "0.0568"
+      },
+      "answer": "A",
+      "answerValue": "0.0668",
+      "solution": "For a Poisson, P(X=k) = e^(-lambda) lambda^k / k!.\nP(X=5) = e^(-2.5) x 2.5^5 / 5!\n= 0.082085 x 97.6562 / 120 = 0.0668."
+    },
+    {
+      "n": 13,
+      "topic": "Univariate Random Variables",
+      "stem": "The lifetime of a component (in years) follows an exponential distribution with mean 3. Calculate the probability that the component lasts more than 3 year(s).",
+      "choices": {
+        "A": "0.3311",
+        "B": "0.3127",
+        "C": "0.4231",
+        "D": "0.4479",
+        "E": "0.3679"
+      },
+      "answer": "E",
+      "answerValue": "0.3679",
+      "solution": "For an exponential with mean theta, P(X > t) = e^(-t/theta).\nP(X > 3) = e^(-3/3) = 0.3679."
+    },
+    {
+      "n": 14,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A and B) = 0.12 and P(B) = 0.60. Calculate P(A | B).",
+      "choices": {
+        "A": "0.1600",
+        "B": "0.2000",
+        "C": "0.1700",
+        "D": "0.8000",
+        "E": "0.2100"
+      },
+      "answer": "B",
+      "answerValue": "0.2000",
+      "solution": "By definition, P(A|B) = P(A and B) / P(B).\nP(A|B) = 0.12 / 0.60 = 0.2000."
+    },
+    {
+      "n": 15,
+      "topic": "Multivariate Random Variables",
+      "stem": "For random variables X and Y, E[X] = 2, E[Y] = 4, and E[XY] = 9. Calculate Cov(X, Y).",
+      "choices": {
+        "A": "0.90",
+        "B": "1.20",
+        "C": "1.15",
+        "D": "1.00",
+        "E": "1.10"
+      },
+      "answer": "D",
+      "answerValue": "1.00",
+      "solution": "Cov(X, Y) = E[XY] - E[X]E[Y].\nCov(X, Y) = 9 - 2 x 4 = 1.00."
+    },
+    {
+      "n": 16,
+      "topic": "Univariate Random Variables",
+      "stem": "A discrete random variable X has the following distribution: P(X=0)=0.30, P(X=4)=0.30, P(X=10)=0.40. Calculate E[X].",
+      "choices": {
+        "A": "5.200",
+        "B": "4.420",
+        "C": "6.042",
+        "D": "5.460",
+        "E": "4.574"
+      },
+      "answer": "A",
+      "answerValue": "5.200",
+      "solution": "E[X] = sum x P(X=x).\nE[X] = 0x0.30 + 4x0.30 + 10x0.40 = 5.200."
+    },
+    {
+      "n": 17,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X follows a binomial distribution with n = 11 trials and success probability p = 0.25. Calculate P(X = 9).",
+      "choices": {
+        "A": "0.0001",
+        "B": "0.9999",
+        "C": "0.0001",
+        "D": "0.0002",
+        "E": "0.0001"
+      },
+      "answer": "A",
+      "answerValue": "0.0001",
+      "solution": "For a binomial, P(X=k) = C(n,k) p^k (1-p)^(n-k).\nP(X=9) = C(11,9) x 0.25^9 x 0.75^2\n= 55 x 0.000004 x 0.562500 = 0.0001."
+    },
+    {
+      "n": 18,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X is uniformly distributed on the interval [0, 6]. Calculate the variance of X.",
+      "choices": {
+        "A": "3.4500",
+        "B": "3.1500",
+        "C": "3.3000",
+        "D": "2.5500",
+        "E": "3.0000"
+      },
+      "answer": "E",
+      "answerValue": "3.0000",
+      "solution": "For a uniform on [a, b], Var(X) = (b - a)^2 / 12.\nVar(X) = (6 - 0)^2 / 12 = 36 / 12 = 3.0000."
+    },
+    {
+      "n": 19,
+      "topic": "Univariate Random Variables",
+      "stem": "Independent trials each succeed with probability 0.30. Calculate the probability that the first success occurs on trial 5.",
+      "choices": {
+        "A": "0.0648",
+        "B": "0.0612",
+        "C": "0.0720",
+        "D": "0.0828",
+        "E": "0.0792"
+      },
+      "answer": "C",
+      "answerValue": "0.0720",
+      "solution": "For a geometric distribution, P(X=k) = (1-p)^(k-1) p.\nP(X=5) = 0.70^4 x 0.30 = 0.240100 x 0.30 = 0.0720."
+    },
+    {
+      "n": 20,
+      "topic": "Multivariate Random Variables",
+      "stem": "For random variables X and Y, Var(X) = 25, Var(Y) = 16, and Cov(X, Y) = -2. Calculate Var(X + Y).",
+      "choices": {
+        "A": "37.00",
+        "B": "40.70",
+        "C": "28.53",
+        "D": "31.45",
+        "E": "29.60"
+      },
+      "answer": "A",
+      "answerValue": "37.00",
+      "solution": "Var(X + Y) = Var(X) + Var(Y) + 2 Cov(X, Y).\nVar(X + Y) = 25 + 16 + 2 x -2 = 37.00."
+    },
+    {
+      "n": 21,
+      "topic": "General Probability",
+      "stem": "Machine A produces 70% of a factory's output with a defect rate of 5%. Machine B produces the remaining 30% with a defect rate of 6%. An item selected at random is found to be defective. Calculate the probability that it came from Machine A.",
+      "choices": {
+        "A": "0.6604",
+        "B": "0.5283",
+        "C": "0.7594",
+        "D": "0.6934",
+        "E": "0.5613"
+      },
+      "answer": "A",
+      "answerValue": "0.6604",
+      "solution": "By Bayes' Theorem, P(A|D) = P(A)P(D|A) / [P(A)P(D|A) + P(B)P(D|B)].\nNumerator = 0.70 x 0.05 = 0.03500\nDenominator = 0.70 x 0.05 + 0.30 x 0.06 = 0.05300\nP(A|D) = 0.03500 / 0.05300 = 0.6604."
+    },
+    {
+      "n": 22,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A) = 0.55, P(B) = 0.50, and P(A and B) = 0.15. Calculate P(A or B).",
+      "choices": {
+        "A": "0.765",
+        "B": "0.900",
+        "C": "0.100",
+        "D": "0.810",
+        "E": "0.945"
+      },
+      "answer": "B",
+      "answerValue": "0.900",
+      "solution": "By inclusion-exclusion, P(A or B) = P(A) + P(B) - P(A and B).\nP(A or B) = 0.55 + 0.50 - 0.15 = 0.900."
+    },
+    {
+      "n": 23,
+      "topic": "Univariate Random Variables",
+      "stem": "A discrete random variable X has the following distribution: P(X=0)=0.20, P(X=1)=0.30, P(X=2)=0.50. Calculate E[X].",
+      "choices": {
+        "A": "1.080",
+        "B": "1.365",
+        "C": "1.300",
+        "D": "1.495",
+        "E": "1.560"
+      },
+      "answer": "C",
+      "answerValue": "1.300",
+      "solution": "E[X] = sum x P(X=x).\nE[X] = 0x0.20 + 1x0.30 + 2x0.50 = 1.300."
+    },
+    {
+      "n": 24,
+      "topic": "General Probability",
+      "stem": "Machine A produces 60% of a factory's output with a defect rate of 4%. Machine B produces the remaining 40% with a defect rate of 10%. An item selected at random is found to be defective. Calculate the probability that it came from Machine A.",
+      "choices": {
+        "A": "0.3187",
+        "B": "0.6250",
+        "C": "0.4125",
+        "D": "0.3079",
+        "E": "0.3750"
+      },
+      "answer": "E",
+      "answerValue": "0.3750",
+      "solution": "By Bayes' Theorem, P(A|D) = P(A)P(D|A) / [P(A)P(D|A) + P(B)P(D|B)].\nNumerator = 0.60 x 0.04 = 0.02400\nDenominator = 0.60 x 0.04 + 0.40 x 0.10 = 0.06400\nP(A|D) = 0.02400 / 0.06400 = 0.3750."
+    },
+    {
+      "n": 25,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X is uniformly distributed on the interval [5, 15]. Calculate the variance of X.",
+      "choices": {
+        "A": "9.1667",
+        "B": "10.0000",
+        "C": "6.5392",
+        "D": "8.3333",
+        "E": "6.6667"
+      },
+      "answer": "D",
+      "answerValue": "8.3333",
+      "solution": "For a uniform on [a, b], Var(X) = (b - a)^2 / 12.\nVar(X) = (15 - 5)^2 / 12 = 100 / 12 = 8.3333."
+    },
+    {
+      "n": 26,
+      "topic": "Univariate Random Variables",
+      "stem": "The lifetime of a component (in years) follows an exponential distribution with mean 5. Calculate the probability that the component lasts more than 4 year(s).",
+      "choices": {
+        "A": "0.4718",
+        "B": "0.5392",
+        "C": "0.4493",
+        "D": "0.4269",
+        "E": "0.3575"
+      },
+      "answer": "C",
+      "answerValue": "0.4493",
+      "solution": "For an exponential with mean theta, P(X > t) = e^(-t/theta).\nP(X > 4) = e^(-4/5) = 0.4493."
+    },
+    {
+      "n": 27,
+      "topic": "Univariate Random Variables",
+      "stem": "A random variable X follows a binomial distribution with n = 12 trials and success probability p = 0.20. Calculate P(X = 6).",
+      "choices": {
+        "A": "0.0147",
+        "B": "0.0165",
+        "C": "0.0155",
+        "D": "0.0163",
+        "E": "0.0120"
+      },
+      "answer": "C",
+      "answerValue": "0.0155",
+      "solution": "For a binomial, P(X=k) = C(n,k) p^k (1-p)^(n-k).\nP(X=6) = C(12,6) x 0.20^6 x 0.80^6\n= 924 x 0.000064 x 0.262144 = 0.0155."
+    },
+    {
+      "n": 28,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A) = 0.30, P(B) = 0.50, and P(A and B) = 0.20. Calculate P(A or B).",
+      "choices": {
+        "A": "0.510",
+        "B": "0.600",
+        "C": "0.660",
+        "D": "0.570",
+        "E": "0.400"
+      },
+      "answer": "B",
+      "answerValue": "0.600",
+      "solution": "By inclusion-exclusion, P(A or B) = P(A) + P(B) - P(A and B).\nP(A or B) = 0.30 + 0.50 - 0.20 = 0.600."
+    },
+    {
+      "n": 29,
+      "topic": "General Probability",
+      "stem": "For events A and B, P(A and B) = 0.20 and P(B) = 0.30. Calculate P(A | B).",
+      "choices": {
+        "A": "0.7649",
+        "B": "0.5333",
+        "C": "0.5667",
+        "D": "0.6667",
+        "E": "0.8000"
+      },
+      "answer": "D",
+      "answerValue": "0.6667",
+      "solution": "By definition, P(A|B) = P(A and B) / P(B).\nP(A|B) = 0.20 / 0.30 = 0.6667."
+    },
+    {
+      "n": 30,
+      "topic": "Univariate Random Variables",
+      "stem": "Independent trials each succeed with probability 0.40. Calculate the probability that the first success occurs on trial 2.",
+      "choices": {
+        "A": "0.2040",
+        "B": "0.2400",
+        "C": "0.2280",
+        "D": "0.2251",
+        "E": "0.2760"
+      },
+      "answer": "B",
+      "answerValue": "0.2400",
+      "solution": "For a geometric distribution, P(X=k) = (1-p)^(k-1) p.\nP(X=2) = 0.60^1 x 0.40 = 0.600000 x 0.40 = 0.2400."
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+#!/usr/bin/env python3
+"""
+generate_exam.py — Exam generation pipeline for exam.riskrunners.com
+
+Generates ONE practice exam (30 questions with worked solutions) for a given
+track (FM or P), persists it as a JSON file under data/<track>/, and updates
+data/manifest.json.
+
+Design decisions (from the requirements):
+  * FM and P are SEPARATE pipelines but persist into the SAME data/ tree and the
+    SAME manifest.json (keyed by track).
+  * A track keeps a MAX of 10 exams. This is an upsert / FIFO ("first in, first
+    out") queue: generating an 11th exam expunges the oldest and deletes its
+    file. The UI labels the surviving 10 as #1..#10 by array position.
+  * Every question's numbers are drawn from an RNG, so re-running the pipeline
+    produces genuinely different exams rather than the same numbers reworded.
+  * Output is plain JSON so the static GitHub Pages site (HTML/CSS/JS only) can
+    read it with fetch() — no server, no SQL at runtime.
+
+Usage:
+    python3 generate_exam.py FM
+    python3 generate_exam.py P
+    python3 generate_exam.py FM --max 10        # override cap (testing)
+    python3 generate_exam.py FM --seed 123       # reproducible (testing)
+"""
+
+import argparse
+import json
+import os
+import random
+import sys
+import time
+from datetime import datetime, timezone
+
+from content_fm import FM_BUILDERS
+from content_p import P_BUILDERS
+
+# --------------------------------------------------------------------------
+# Paths
+# --------------------------------------------------------------------------
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)               # repo root (exam.riskrunners.com)
+DATA_DIR = os.path.join(ROOT, "data")
+MANIFEST_PATH = os.path.join(DATA_DIR, "manifest.json")
+
+TRACKS = {
+    "FM": {
+        "name": "Financial Mathematics",
+        "builders": FM_BUILDERS,
+        "config": {"numQuestions": 30, "choices": 5, "timeLimitMinutes": 150},
+    },
+    "P": {
+        "name": "Probability",
+        "builders": P_BUILDERS,
+        "config": {"numQuestions": 30, "choices": 5, "timeLimitMinutes": 180},
+    },
+}
+MAX_KEEP = 10
+LETTERS = ["A", "B", "C", "D", "E"]
+
+
+# --------------------------------------------------------------------------
+# Choice formatting / distractors
+# --------------------------------------------------------------------------
+def _format_value(value, unit, nd):
+    if unit == "currency":
+        return f"{value:,.{nd}f}"
+    if unit == "percent":
+        return f"{value:,.{nd}f}%"
+    if unit == "probability":
+        return f"{value:,.{nd}f}"
+    if unit == "years":
+        return f"{value:,.{nd}f}"
+    return f"{value:,.{nd}f}"
+
+
+def _make_distractors(rng, correct, unit):
+    """Produce 4 plausible-but-wrong numeric distractors around `correct`."""
+    factors = set()
+    candidates = []
+    # multiplicative perturbations
+    for mult in (0.9, 0.95, 1.05, 1.1, 1.15, 0.85, 1.2, 0.8):
+        candidates.append(correct * mult)
+    # sign flips / common student errors
+    candidates.append(correct * 1.0 + abs(correct) * rng.uniform(0.03, 0.25))
+    candidates.append(correct - abs(correct) * rng.uniform(0.03, 0.25))
+    if unit == "probability":
+        candidates.append(1 - correct)
+    rng.shuffle(candidates)
+
+    chosen = []
+    for c in candidates:
+        if unit == "probability":
+            c = min(max(c, 0.0001), 0.9999)
+        # keep distractors distinct from correct and each other
+        key = round(c, 4)
+        if abs(c - correct) < abs(correct) * 0.01 + 1e-9:
+            continue
+        if key in factors:
+            continue
+        factors.add(key)
+        chosen.append(c)
+        if len(chosen) == 4:
+            break
+    # top up if we somehow ran short
+    bump = 1.25
+    while len(chosen) < 4:
+        c = correct * bump
+        chosen.append(c)
+        bump += 0.07
+    return chosen[:4]
+
+
+def _build_question(rng, builder, number):
+    raw = builder(rng)
+    nd = raw.get("round", 2)
+    unit = raw.get("unit", "number")
+    correct = raw["correct"]
+
+    values = [correct] + _make_distractors(rng, correct, unit)
+    rng.shuffle(values)
+    correct_index = min(
+        range(len(values)), key=lambda i: abs(values[i] - correct)
+    )
+
+    choices = {}
+    for i, v in enumerate(values):
+        choices[LETTERS[i]] = _format_value(v, unit, nd)
+    answer_letter = LETTERS[correct_index]
+
+    return {
+        "n": number,
+        "topic": raw["topic"],
+        "stem": raw["stem"],
+        "choices": choices,
+        "answer": answer_letter,
+        "answerValue": _format_value(correct, unit, nd),
+        "solution": raw["solution"],
+    }
+
+
+# --------------------------------------------------------------------------
+# Exam assembly
+# --------------------------------------------------------------------------
+def build_exam(track, rng):
+    spec = TRACKS[track]
+    builders = spec["builders"]
+    n_q = spec["config"]["numQuestions"]
+
+    # Spread question topics: cycle builders, shuffling order each pass so no two
+    # exams present the same sequence, and no builder dominates.
+    order = []
+    while len(order) < n_q:
+        pool = builders[:]
+        rng.shuffle(pool)
+        order.extend(pool)
+    order = order[:n_q]
+
+    questions = [_build_question(rng, b, i + 1) for i, b in enumerate(order)]
+
+    ts = int(time.time())
+    exam_id = f"{track.lower()}-{ts}"
+    return {
+        "id": exam_id,
+        "track": track,
+        "trackName": spec["name"],
+        "created": datetime.now(timezone.utc).isoformat(),
+        "config": spec["config"],
+        "questions": questions,
+    }
+
+
+# --------------------------------------------------------------------------
+# Manifest / persistence (upsert + FIFO cap)
+# --------------------------------------------------------------------------
+def load_manifest():
+    if os.path.exists(MANIFEST_PATH):
+        with open(MANIFEST_PATH, "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
+    for t in TRACKS:
+        data.setdefault(t, [])
+    return data
+
+
+def save_manifest(manifest):
+    with open(MANIFEST_PATH, "w") as f:
+        json.dump(manifest, f, indent=2)
+
+
+def persist(exam, max_keep):
+    track = exam["track"]
+    track_dir = os.path.join(DATA_DIR, track.lower())
+    os.makedirs(track_dir, exist_ok=True)
+
+    manifest = load_manifest()
+    entries = manifest[track]
+
+    # Write the new exam file.
+    filename = f"{exam['id']}.json"
+    rel_path = f"data/{track.lower()}/{filename}"
+    with open(os.path.join(track_dir, filename), "w") as f:
+        json.dump(exam, f, indent=2)
+
+    entries.append({
+        "id": exam["id"],
+        "track": track,
+        "title": f"{track} Practice Exam",  # display index applied by UI
+        "created": exam["created"],
+        "questions": exam["config"]["numQuestions"],
+        "timeLimitMinutes": exam["config"]["timeLimitMinutes"],
+        "file": rel_path,
+    })
+
+    # FIFO: expunge oldest until within cap, deleting their files.
+    while len(entries) > max_keep:
+        oldest = entries.pop(0)
+        old_file = os.path.join(ROOT, oldest["file"])
+        if os.path.exists(old_file):
+            os.remove(old_file)
+        print(f"  FIFO: expunged oldest exam {oldest['id']}")
+
+    manifest[track] = entries
+    save_manifest(manifest)
+    return rel_path, len(entries)
+
+
+# --------------------------------------------------------------------------
+# CLI
+# --------------------------------------------------------------------------
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Generate a practice exam.")
+    parser.add_argument("track", choices=list(TRACKS.keys()),
+                        help="Exam track: FM or P")
+    parser.add_argument("--max", type=int, default=MAX_KEEP,
+                        help="Max exams to keep per track (default 10)")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="RNG seed for reproducible output (testing only)")
+    args = parser.parse_args(argv)
+
+    rng = random.Random(args.seed)
+
+    print(f"Generating a {args.track} ({TRACKS[args.track]['name']}) practice exam...")
+    exam = build_exam(args.track, rng)
+    rel_path, count = persist(exam, args.max)
+
+    print(f"  Created {len(exam['questions'])} questions.")
+    print(f"  Saved to {rel_path}")
+    print(f"  {args.track} library now holds {count} exam(s) (max {args.max}).")
+    print("Done. Review the site, then push to main when ready.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

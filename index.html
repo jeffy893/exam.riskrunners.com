@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actuarial Exam Prep — exam.riskrunners.com</title>
+  <meta name="description" content="Practice the SOA Exam FM (Financial Mathematics) and Exam P (Probability). Timed, full-length practice exams with worked solutions and downloadable PDFs.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Actuarial Exam Prep — FM & P Practice Exams">
+  <meta property="og:description" content="Timed, full-length SOA FM and P practice exams with worked solutions and PDF export.">
+  <meta property="og:url" content="https://exam.riskrunners.com">
+  <meta property="og:site_name" content="exam.riskrunners.com">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- jsPDF for client-side PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+</head>
+<body>
+  <!-- === Top Navigation === -->
+  <nav class="site-nav">
+    <button class="nav-brand" data-nav="home">
+      <span class="brand-mark">RR</span> Actuarial Exam Prep
+    </button>
+    <div class="nav-links">
+      <button class="nav-link" data-nav="home">Home</button>
+      <button class="nav-link" data-nav="library-FM">FM Library</button>
+      <button class="nav-link" data-nav="library-P">P Library</button>
+    </div>
+  </nav>
+
+  <!-- === HOME VIEW === -->
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <h1>Actuarial Exam Prep</h1>
+      <p class="subtitle">Full-length, timed practice for the SOA Exams FM &amp; P</p>
+      <p class="tagline">Practice anywhere. Worked solutions. Downloadable PDFs.</p>
+    </div>
+    <div class="container">
+      <div class="track-grid">
+        <div class="track-card fm">
+          <h2>Exam FM</h2>
+          <p class="track-full">Financial Mathematics</p>
+          <p class="track-meta">30 questions &middot; 5 choices each<br>2 hours 30 minutes &middot; ~5 min / question</p>
+          <div class="exam-count" id="home-count-FM">— exams available</div>
+          <button class="btn btn-primary btn-block" data-nav="library-FM">Browse FM Exams</button>
+        </div>
+        <div class="track-card p">
+          <h2>Exam P</h2>
+          <p class="track-full">Probability</p>
+          <p class="track-meta">30 questions &middot; 5 choices each<br>3 hours (180 min) &middot; ~6 min / question</p>
+          <div class="exam-count" id="home-count-P">— exams available</div>
+          <button class="btn btn-primary btn-block" data-nav="library-P">Browse P Exams</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === LIBRARY VIEW === -->
+  <section id="view-library" class="view">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="library-title">Exam Library</h2>
+        <span class="hint">Scoring is saved on this device. Tap an exam to begin.</span>
+      </div>
+      <div id="library-list" class="exam-list"></div>
+    </div>
+  </section>
+
+  <!-- === EXAM-TAKING VIEW === -->
+  <section id="view-exam" class="view">
+    <div class="exam-topbar">
+      <div class="exam-topbar-inner">
+        <div class="timer-box">
+          <div class="timer-label">Time</div>
+          <div id="exam-timer" class="timer">00:00</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span id="progress-text">0 of 30 answered</span>
+            <span id="exam-label"></span>
+          </div>
+          <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+        </div>
+        <button id="btn-complete" class="btn btn-success btn-complete">Complete Exam</button>
+      </div>
+    </div>
+    <div class="container">
+      <div id="exam-questions"></div>
+      <button id="btn-complete-bottom" class="btn btn-success btn-block">Complete Exam</button>
+    </div>
+  </section>
+
+  <!-- === RESULTS / REVIEW VIEW === -->
+  <section id="view-results" class="view">
+    <div class="container">
+      <div id="scorecard-wrap"></div>
+      <div class="section-head">
+        <h2>Review &amp; Solutions</h2>
+        <span class="hint">Expand each solution to see the full working.</span>
+      </div>
+      <div id="review-questions"></div>
+    </div>
+  </section>
+
+  <!-- === Footer (signature shared with state.riskrunners.com) === -->
+  <footer class="site-footer">
+    <div class="footer-brand">RISK RUNNERS</div>
+    <p>Actuarial Exam Preparation — FM &amp; P Practice Exams</p>
+    <p class="footer-sub">A Risk Runners Project</p>
+    <p class="footer-copyright">&copy; <span id="footer-year">2026</span> Integral MASS. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="https://github.com/jeffy893/riskrunners" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Risk Runners Codebase
+      </a>
+      <a href="https://street.riskrunners.com" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3.5A1.5 1.5 0 012.5 2h11A1.5 1.5 0 0115 3.5v9a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 011 12.5v-9zm1.5-.5a.5.5 0 00-.5.5v9a.5.5 0 00.5.5h11a.5.5 0 00.5-.5v-9a.5.5 0 00-.5-.5h-11zM4 5.5a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zM4.5 7a.5.5 0 000 1h7a.5.5 0 000-1h-7zM4 9.5a.5.5 0 01.5-.5h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5z"/></svg>
+        Street Math
+      </a>
+      <a href="https://jeffersonrichards.com" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.6 0H2.4C1.07 0 0 1.07 0 2.4v11.2C0 14.93 1.07 16 2.4 16h11.2c1.33 0 2.4-1.07 2.4-2.4V2.4C16 1.07 14.93 0 13.6 0zM4.75 13.6H2.4V6h2.35v7.6zM3.58 5.03a1.36 1.36 0 110-2.72 1.36 1.36 0 010 2.72zM13.6 13.6h-2.35V9.92c0-.88-.02-2.01-1.23-2.01-1.23 0-1.42.96-1.42 1.95v3.74H6.25V6h2.26v1.04h.03c.31-.6 1.08-1.23 2.22-1.23 2.38 0 2.82 1.56 2.82 3.6v4.19z"/></svg>
+        Connect with the Founder
+      </a>
+      <a href="https://www.riskrunners.com" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm5.3 4.7h-2.2c-.2-1-.6-1.9-1.1-2.6a6 6 0 013.3 2.6zM8 1.3c.7.8 1.2 1.9 1.5 3.4h-3C6.8 3.2 7.3 2.1 8 1.3zM1.5 9.3a6.4 6.4 0 010-2.6h2.6a13 13 0 000 2.6H1.5zm1.2 1.4h2.2c.2 1 .6 1.9 1.1 2.6a6 6 0 01-3.3-2.6zM4.9 4.7H2.7a6 6 0 013.3-2.6c-.5.7-.9 1.6-1.1 2.6zm3.1 10c-.7-.8-1.2-1.9-1.5-3.4h3c-.3 1.5-.8 2.6-1.5 3.4zm1.8-4.7H6.2a11.5 11.5 0 010-4h3.6a11.5 11.5 0 010 4zm.2 3.3c.5-.7.9-1.6 1.1-2.6h2.2a6 6 0 01-3.3 2.6zm1.4-4h2.6a6.4 6.4 0 000-2.6h-2.6a13 13 0 010 2.6z"/></svg>
+        Actuarial Wiki
+      </a>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/exam.js"></script>
+  <script src="js/results.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
