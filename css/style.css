@@ -37,6 +37,7 @@
   --radius-sm: 8px;
   --shadow: 0 1px 3px rgba(43, 42, 38, 0.08), 0 4px 14px rgba(43, 42, 38, 0.06);
   --shadow-lg: 0 10px 34px rgba(43, 42, 38, 0.14);
+  --nav-h: 63px;   /* height of the sticky top nav; exam topbar sticks below it */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -243,9 +244,9 @@ body {
 /* === Exam-taking view === */
 .exam-topbar {
   position: sticky;
-  top: 0;
-  z-index: 40;
-  background: rgba(245, 241, 232, 0.95);
+  top: var(--nav-h);   /* stick just below the site nav so it stays visible */
+  z-index: 45;
+  background: rgba(245, 241, 232, 0.97);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
   padding: 12px 20px;
@@ -304,7 +305,7 @@ body {
   padding: 24px 26px;
   margin-bottom: 20px;
   box-shadow: var(--shadow);
-  scroll-margin-top: 92px;
+  scroll-margin-top: 132px;   /* clears sticky nav + exam topbar */
 }
 .question-head {
   display: flex;
