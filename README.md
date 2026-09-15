@@ -110,6 +110,11 @@ git push                        # GitHub Pages publishes from main
 exam.riskrunners.com/
 ├── index.html              # single-page app (home / library / exam / results)
 ├── css/style.css           # calm "study desk" theme (paper + academic indigo)
+├── assets/                 # branding
+│   ├── rr-exam-logo.png        # full-res master (used in PDF covers)
+│   ├── rr-exam-logo-web.png    # lightweight logo for nav + hero
+│   ├── favicon.png             # tab / apple-touch icon
+│   └── og-image.png            # 1200x630 social share card (link previews)
 ├── js/
 │   ├── storage.js          # per-device result persistence (localStorage)
 │   ├── pdf.js              # client-side PDF export (jsPDF)

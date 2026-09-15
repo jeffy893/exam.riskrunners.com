@@ -27,7 +27,36 @@ const PDF = (() => {
   const MUTED = [138, 133, 119];
 
   const MARGIN = 56;          // pt
+  const LOGO_URL = 'assets/rr-exam-logo.png';
   let doc, pageW, pageH, contentW;
+  let _logoData = null;       // cached { dataUrl, w, h }
+
+  // Load the logo once as a data URL (jsPDF needs raster data, not a URL).
+  function _loadLogo() {
+    if (_logoData !== null) return Promise.resolve(_logoData);
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          canvas.getContext('2d').drawImage(img, 0, 0);
+          _logoData = {
+            dataUrl: canvas.toDataURL('image/png'),
+            w: img.naturalWidth,
+            h: img.naturalHeight
+          };
+        } catch (e) {
+          _logoData = false;  // canvas tainted or failed; skip logo gracefully
+        }
+        resolve(_logoData);
+      };
+      img.onerror = () => { _logoData = false; resolve(_logoData); };
+      img.src = LOGO_URL;
+    });
+  }
 
   function _newDoc() {
     const { jsPDF } = window.jspdf;
@@ -58,18 +87,25 @@ const PDF = (() => {
   }
 
   function _coverPage(exam, docType) {
-    // Top brand
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...INDIGO);
-    doc.text('RISK RUNNERS  \u2022  ACTUARIAL EXAM PREP', MARGIN, MARGIN + 6);
-
-    doc.setDrawColor(...INDIGO);
-    doc.setLineWidth(1.5);
-    doc.line(MARGIN, MARGIN + 16, pageW - MARGIN, MARGIN + 16);
+    // Top brand — logo if we have it, otherwise a text header.
+    if (_logoData && _logoData.dataUrl) {
+      const logoW = 190;
+      const logoH = logoW * (_logoData.h / _logoData.w);
+      doc.addImage(_logoData.dataUrl, 'PNG',
+        (pageW - logoW) / 2, MARGIN, logoW, logoH, undefined, 'FAST');
+    } else {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(...INDIGO);
+      doc.text('RISK RUNNERS  \u2022  ACTUARIAL EXAM PREP',
+        pageW / 2, MARGIN + 6, { align: 'center' });
+      doc.setDrawColor(...INDIGO);
+      doc.setLineWidth(1.5);
+      doc.line(MARGIN, MARGIN + 16, pageW - MARGIN, MARGIN + 16);
+    }
 
     // Title block
-    let y = pageH * 0.32;
+    let y = pageH * 0.38;
     doc.setFont('times', 'bold');
     doc.setFontSize(30);
     doc.setTextColor(...INK);
@@ -183,6 +219,7 @@ const PDF = (() => {
 
   async function build(exam, withSolutions) {
     if (!window.jspdf) { App.toast('PDF library still loading — try again.'); return; }
+    await _loadLogo();
     _newDoc();
     _coverPage(exam, withSolutions ? 'Problems & Solutions' : 'Practice Problems');
 
@@ -201,8 +238,9 @@ const PDF = (() => {
     App.toast('PDF downloaded.');
   }
 
-  function buildScorecard(exam, res) {
+  async function buildScorecard(exam, res) {
     if (!window.jspdf) { App.toast('PDF library still loading — try again.'); return; }
+    await _loadLogo();
     _newDoc();
     _coverPage(exam, 'Exam Scorecard');
     doc.addPage();

@@ -79,7 +79,9 @@ body {
   color: var(--ink);
   font-family: var(--font-ui);
 }
-.nav-brand .brand-mark { color: var(--indigo); font-weight: 800; }
+.nav-logo { height: 34px; width: auto; display: block; }
+.nav-brand-text { color: var(--indigo-deep); font-weight: 700; }
+@media (max-width: 480px) { .nav-brand-text { display: none; } }
 
 .nav-links { display: flex; gap: 6px; }
 
@@ -111,7 +113,14 @@ body {
 /* === Home / Hero === */
 .hero {
   text-align: center;
-  padding: 52px 20px 20px;
+  padding: 44px 20px 20px;
+}
+.hero-logo {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  margin: 0 auto 18px;
+  display: block;
 }
 .hero h1 {
   font-family: var(--font-read);
