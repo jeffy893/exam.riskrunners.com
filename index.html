@@ -32,6 +32,9 @@
 
   <!-- jsPDF for client-side PDF export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
+  <!-- pdf.js: render the formula sheets inline (reliable on iPad Safari, unlike native iframe PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <!-- === Top Navigation === -->
@@ -115,9 +118,16 @@
     <div id="formula-panel" class="formula-panel" role="dialog" aria-modal="false" aria-label="Formula sheet" aria-hidden="true">
       <div class="formula-panel-head">
         <span id="formula-panel-title" class="formula-panel-title">Formula Sheet</span>
+        <div class="formula-zoom" role="group" aria-label="Zoom controls">
+          <button id="formula-zoom-out" class="formula-zoom-btn" aria-label="Zoom out" title="Zoom out">&minus;</button>
+          <button id="formula-zoom-reset" class="formula-zoom-btn formula-zoom-reset" aria-label="Reset zoom" title="Fit width">Fit</button>
+          <button id="formula-zoom-in" class="formula-zoom-btn" aria-label="Zoom in" title="Zoom in">&plus;</button>
+        </div>
         <button id="btn-formula-close" class="formula-close" aria-label="Close formula sheet" title="Close">&times;</button>
       </div>
-      <iframe id="formula-frame" class="formula-frame" title="Formula sheet" src="about:blank"></iframe>
+      <div id="formula-scroll" class="formula-scroll">
+        <div id="formula-pages" class="formula-pages"></div>
+      </div>
     </div>
   </section>
 

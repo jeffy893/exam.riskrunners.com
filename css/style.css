@@ -372,17 +372,77 @@ body {
 }
 .formula-close:hover { color: var(--rose); border-color: var(--rose); background: var(--rose-soft); }
 
-.formula-frame {
+/* Zoom controls in the panel header */
+.formula-zoom { display: flex; align-items: center; gap: 6px; margin-left: auto; margin-right: 10px; }
+.formula-zoom-btn {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.formula-zoom-btn.formula-zoom-reset { font-size: 0.82rem; font-weight: 600; }
+.formula-zoom-btn:hover { color: var(--indigo); border-color: var(--indigo); background: var(--indigo-soft); }
+
+/* Own scroll container so touch scrolling works on iOS (the native iframe
+   PDF viewer did not give us a scrollable region). */
+.formula-scroll {
   flex: 1;
+  min-height: 0;
   width: 100%;
-  border: none;
+  overflow-y: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   background: var(--bg-soft);
   border-radius: 0 0 16px 16px;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+.formula-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 12px 28px;
+  min-height: 100%;
+}
+.formula-page {
+  display: block;
+  background: #fff;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  max-width: none;   /* zoom may exceed container width; allow horizontal scroll */
+}
+.formula-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+  text-align: center;
+  padding: 60px 20px;
+  width: 100%;
 }
 
 @media (max-width: 680px) {
   .btn-formula-float { left: 14px; bottom: 14px; padding: 12px 18px; font-size: 0.95rem; }
   .formula-panel { height: 88vh; }
+  .formula-panel-title { font-size: 0.95rem; }
+  .formula-zoom-btn { min-width: 32px; height: 32px; }
 }
 
 /* Question cards */

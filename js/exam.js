@@ -37,33 +37,173 @@ const Exam = (() => {
     bindControls();
   }
 
-  // ---- formula sheet (in-page slide-up PDF) ----
+  // ---- formula sheet (in-page slide-up viewer) ----
+  //
+  // We render the PDF ourselves with pdf.js instead of leaning on an <iframe>.
+  // On iPad Safari the native iframe PDF viewer only showed page 1, ignored the
+  // fit-width hint (so it opened absurdly zoomed in), and swallowed touch
+  // scrolling. Rendering every page to a <canvas> inside our own scroll
+  // container fixes all three: all pages show, scrolling works, and a zoom
+  // factor lets the reader scale in and out.
+  let formulaDoc = null;        // loaded pdfjs document for the current track
+  let formulaZoom = 1;          // multiplier applied on top of fit-to-width
+  let formulaRenderToken = 0;   // guards against overlapping re-renders
+  const FORMULA_ZOOM_MIN = 0.5;
+  const FORMULA_ZOOM_MAX = 4;
+
+  function pdfjsLib() {
+    return window['pdfjsLib'] || (window.pdfjsLib);
+  }
+
   function setupFormulaSheet(track) {
     const btn = document.getElementById('btn-formula');
     const panel = document.getElementById('formula-panel');
-    const frame = document.getElementById('formula-frame');
     const closeBtn = document.getElementById('btn-formula-close');
     const title = document.getElementById('formula-panel-title');
-    if (!btn || !panel || !frame) return;
+    const pages = document.getElementById('formula-pages');
+    if (!btn || !panel || !pages) return;
 
     const src = FORMULA_PDF[track] || '';
     formulaLoaded = false;
-    frame.src = 'about:blank';           // reset between exams
-    closeFormula();                       // ensure it starts hidden/down
+    formulaDoc = null;
+    formulaZoom = 1;
+    pages.innerHTML = '';
+    closeFormula();
 
     title.textContent = `Exam ${track} — Formula Sheet`;
     btn.style.display = src ? 'inline-flex' : 'none';
 
     btn.onclick = () => {
       if (panel.classList.contains('open')) { closeFormula(); return; }
-      if (!formulaLoaded && src) {
-        // Open the PDF at a fitted zoom with no toolbar clutter where supported.
-        frame.src = src + '#view=FitH&toolbar=1';
-        formulaLoaded = true;
-      }
       openFormula();
+      if (!formulaLoaded && src) {
+        formulaLoaded = true;
+        loadFormula(src);
+      }
     };
     closeBtn.onclick = closeFormula;
+
+    document.getElementById('formula-zoom-in').onclick  = () => changeZoom(1.25);
+    document.getElementById('formula-zoom-out').onclick = () => changeZoom(0.8);
+    document.getElementById('formula-zoom-reset').onclick = () => { formulaZoom = 1; renderFormulaPages(); };
+
+    bindPinchZoom();
+  }
+
+  async function loadFormula(src) {
+    const pages = document.getElementById('formula-pages');
+    const lib = pdfjsLib();
+    if (!lib) {
+      pages.innerHTML = '<div class="formula-msg">Viewer failed to load. Check your connection and reopen.</div>';
+      return;
+    }
+    lib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    pages.innerHTML = '<div class="formula-msg"><div class="spinner"></div>Loading formula sheet…</div>';
+    try {
+      formulaDoc = await lib.getDocument(src).promise;
+      await renderFormulaPages();
+    } catch (e) {
+      console.error(e);
+      pages.innerHTML = '<div class="formula-msg">Could not display the formula sheet.</div>';
+    }
+  }
+
+  // Renders every page into its own canvas, sized to fit the panel width and
+  // scaled by the current zoom. Re-run whenever zoom changes or the panel opens.
+  async function renderFormulaPages() {
+    if (!formulaDoc) return;
+    const scroll = document.getElementById('formula-scroll');
+    const pages = document.getElementById('formula-pages');
+    const token = ++formulaRenderToken;
+
+    // Available width for a page (minus a little breathing room), times zoom.
+    const baseWidth = Math.max(240, (scroll.clientWidth || 320) - 24);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    pages.innerHTML = '';
+    for (let n = 1; n <= formulaDoc.numPages; n++) {
+      if (token !== formulaRenderToken) return;   // superseded by a newer render
+      const page = await formulaDoc.getPage(n);
+      const unscaled = page.getViewport({ scale: 1 });
+      const fitScale = (baseWidth / unscaled.width) * formulaZoom;
+      const viewport = page.getViewport({ scale: fitScale });
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'formula-page';
+      canvas.width = Math.floor(viewport.width * dpr);
+      canvas.height = Math.floor(viewport.height * dpr);
+      canvas.style.width = viewport.width + 'px';
+      canvas.style.height = viewport.height + 'px';
+      pages.appendChild(canvas);
+
+      const ctx = canvas.getContext('2d');
+      await page.render({
+        canvasContext: ctx,
+        viewport,
+        transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
+      }).promise;
+    }
+  }
+
+  function changeZoom(factor) {
+    const next = Math.min(FORMULA_ZOOM_MAX, Math.max(FORMULA_ZOOM_MIN, formulaZoom * factor));
+    if (Math.abs(next - formulaZoom) < 0.001) return;
+    formulaZoom = next;
+    renderFormulaPages();
+  }
+
+  // Pinch-to-zoom on touch devices, debounced so we re-render once the gesture
+  // settles rather than on every move event.
+  function bindPinchZoom() {
+    const scroll = document.getElementById('formula-scroll');
+    if (!scroll || scroll._pinchBound) return;
+    scroll._pinchBound = true;
+
+    let startDist = 0;
+    let startZoom = 1;
+    let pinching = false;
+    let settleTimer = null;
+
+    const dist = (t) => {
+      const dx = t[0].clientX - t[1].clientX;
+      const dy = t[0].clientY - t[1].clientY;
+      return Math.hypot(dx, dy);
+    };
+
+    scroll.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        pinching = true;
+        startDist = dist(e.touches);
+        startZoom = formulaZoom;
+      }
+    }, { passive: true });
+
+    scroll.addEventListener('touchmove', (e) => {
+      if (!pinching || e.touches.length !== 2) return;
+      e.preventDefault();   // stop the page from also pinch-zooming
+      const ratio = dist(e.touches) / (startDist || 1);
+      const target = Math.min(FORMULA_ZOOM_MAX, Math.max(FORMULA_ZOOM_MIN, startZoom * ratio));
+      if (Math.abs(target - formulaZoom) > 0.01) {
+        formulaZoom = target;
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(renderFormulaPages, 90);
+      }
+    }, { passive: false });
+
+    scroll.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) pinching = false;
+    }, { passive: true });
+
+    // Re-fit on rotation / resize while the panel is open (iPad orientation).
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      const panel = document.getElementById('formula-panel');
+      if (!formulaDoc || !panel || !panel.classList.contains('open')) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderFormulaPages, 200);
+    });
   }
 
   function openFormula() {
@@ -72,6 +212,8 @@ const Exam = (() => {
     panel.classList.add('open');
     panel.setAttribute('aria-hidden', 'false');
     if (btn) btn.setAttribute('aria-expanded', 'true');
+    // Re-render to the panel's actual width once it has slid into place.
+    if (formulaDoc) setTimeout(renderFormulaPages, 340);
   }
 
   function closeFormula() {
