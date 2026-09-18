@@ -107,6 +107,18 @@
     </div>
     <!-- Floats with the page, pinned to the bottom-right -->
     <button id="btn-complete" class="btn btn-success btn-complete-float">Complete Exam</button>
+
+    <!-- Formula sheet: bottom-left toggle + slide-up panel (in-page, no navigation) -->
+    <button id="btn-formula" class="btn btn-primary btn-formula-float" aria-expanded="false" aria-controls="formula-panel">
+      <span class="formula-icon" aria-hidden="true">&#402;(x)</span> Formula Sheet
+    </button>
+    <div id="formula-panel" class="formula-panel" role="dialog" aria-modal="false" aria-label="Formula sheet" aria-hidden="true">
+      <div class="formula-panel-head">
+        <span id="formula-panel-title" class="formula-panel-title">Formula Sheet</span>
+        <button id="btn-formula-close" class="formula-close" aria-label="Close formula sheet" title="Close">&times;</button>
+      </div>
+      <iframe id="formula-frame" class="formula-frame" title="Formula sheet" src="about:blank"></iframe>
+    </div>
   </section>
 
   <!-- === RESULTS / REVIEW VIEW === -->

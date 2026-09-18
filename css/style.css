@@ -297,6 +297,94 @@ body {
 }
 #view-exam .container { padding-bottom: 110px; }  /* room for the floating button */
 
+/* === Formula sheet — bottom-left float + slide-up panel === */
+.btn-formula-float {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 46;
+  box-shadow: var(--shadow-lg);
+  padding: 14px 22px;
+  font-size: 1.02rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-formula-float .formula-icon {
+  font-family: var(--font-read);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* The panel slides up from the bottom; it does NOT navigate — it holds an
+   iframe that renders the PDF inline. Hidden state parks it below the viewport. */
+.formula-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  height: min(82vh, 900px);
+  background: var(--surface);
+  border-top: 1px solid var(--line-strong);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -12px 40px rgba(43, 42, 38, 0.22);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(105%);
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.formula-panel.open { transform: translateY(0); }
+
+.formula-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-alt);
+  border-radius: 16px 16px 0 0;
+  flex-shrink: 0;
+}
+.formula-panel-title {
+  font-family: var(--font-read);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--indigo-deep);
+}
+.formula-close {
+  background: none;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.formula-close:hover { color: var(--rose); border-color: var(--rose); background: var(--rose-soft); }
+
+.formula-frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: var(--bg-soft);
+  border-radius: 0 0 16px 16px;
+}
+
+@media (max-width: 680px) {
+  .btn-formula-float { left: 14px; bottom: 14px; padding: 12px 18px; font-size: 0.95rem; }
+  .formula-panel { height: 88vh; }
+}
+
 /* Question cards */
 .question-card {
   background: var(--surface);

@@ -12,6 +12,13 @@ const Exam = (() => {
   let startTs = 0;
   let limitSeconds = 0;
   let timerId = null;
+  let formulaLoaded = false;   // lazy-load the PDF into the iframe on first open
+
+  // Map each track to its formula-sheet PDF (rendered inline by the browser).
+  const FORMULA_PDF = {
+    FM: 'assets/Actuary_FM_Formulas1.pdf',
+    P:  'assets/Actuary_P_Formulas1.pdf'
+  };
 
   function start(exam) {
     current = exam;
@@ -23,10 +30,57 @@ const Exam = (() => {
       `${exam.track} • ${exam.questions.length} questions`;
     renderQuestions();
     updateProgress();
+    setupFormulaSheet(exam.track);
     App.showView('view-exam');
     App.setActiveNav('library-' + exam.track);
     startTimer();
     bindControls();
+  }
+
+  // ---- formula sheet (in-page slide-up PDF) ----
+  function setupFormulaSheet(track) {
+    const btn = document.getElementById('btn-formula');
+    const panel = document.getElementById('formula-panel');
+    const frame = document.getElementById('formula-frame');
+    const closeBtn = document.getElementById('btn-formula-close');
+    const title = document.getElementById('formula-panel-title');
+    if (!btn || !panel || !frame) return;
+
+    const src = FORMULA_PDF[track] || '';
+    formulaLoaded = false;
+    frame.src = 'about:blank';           // reset between exams
+    closeFormula();                       // ensure it starts hidden/down
+
+    title.textContent = `Exam ${track} — Formula Sheet`;
+    btn.style.display = src ? 'inline-flex' : 'none';
+
+    btn.onclick = () => {
+      if (panel.classList.contains('open')) { closeFormula(); return; }
+      if (!formulaLoaded && src) {
+        // Open the PDF at a fitted zoom with no toolbar clutter where supported.
+        frame.src = src + '#view=FitH&toolbar=1';
+        formulaLoaded = true;
+      }
+      openFormula();
+    };
+    closeBtn.onclick = closeFormula;
+  }
+
+  function openFormula() {
+    const btn = document.getElementById('btn-formula');
+    const panel = document.getElementById('formula-panel');
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeFormula() {
+    const btn = document.getElementById('btn-formula');
+    const panel = document.getElementById('formula-panel');
+    if (!panel) return;
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
   }
 
   function renderQuestions() {
@@ -82,6 +136,22 @@ const Exam = (() => {
     };
 
     document.getElementById('btn-complete').onclick = complete;
+
+    // Escape closes the formula sheet if it's open.
+    document.onkeydown = (e) => {
+      if (e.key === 'Escape') {
+        const panel = document.getElementById('formula-panel');
+        if (panel && panel.classList.contains('open')) closeFormula();
+      }
+    };
+  }
+
+  // Hide the formula button + panel when leaving the exam view.
+  function teardownFormulaSheet() {
+    closeFormula();
+    const btn = document.getElementById('btn-formula');
+    if (btn) btn.style.display = 'none';
+    document.onkeydown = null;
   }
 
   function updateProgress() {
@@ -138,6 +208,7 @@ const Exam = (() => {
     }
 
     stopTimer();
+    teardownFormulaSheet();
 
     let correct = 0;
     current.questions.forEach(q => {
